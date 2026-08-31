@@ -6,10 +6,13 @@
     />
 
     <form
+        method="POST"
+        action="{{ route('password.confirm') }}"
         wire:submit="confirm"
         x-on:auth-validation-failed.window="$nextTick(() => $refs.password.focus())"
         class="auth-form"
     >
+        @csrf
         <x-auth-field
             id="confirm-password"
             label="{{ __('auth.fields.password') }}"

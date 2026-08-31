@@ -348,6 +348,10 @@ final class Place extends Model
                 ->orWhereHas('accessGrants', function (Builder $grants) use ($user): void {
                     PlaceAccessGrant::constrainActiveAt($grants, now())
                         ->where('user_id', $user->id)
+                        ->whereNotIn('purpose', [
+                            PlaceAccessPurpose::EventAttendance->value,
+                            PlaceAccessPurpose::EventOperations->value,
+                        ])
                         ->where('may_view_exact_location', true);
                 });
         });

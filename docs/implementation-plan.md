@@ -2,6 +2,115 @@
 
 Plan date: 2026-07-30
 
+## Active Delivery: Canonical Authenticated Identity (`AIR-001`)
+
+Status: `current-main audit and root-cause verification complete; implementation
+authorized after this checkpoint` on 2026-08-30.
+
+This delivery began on `main` at
+`24c9b513c7b06114e416dd6007b18d41d3ca3e61`, equal to the observed
+`origin/main`. The shared tree already contained staged, unstaged, and untracked
+forum/meetup work. Those bytes remain user-owned and must not enter this
+delivery's temporary-index commit. The attributable audit record is
+`docs/audits/authenticated-identity-refactor-work-ledger.md`.
+
+### Confirmed defect and root cause
+
+Registration already normalizes and persists the submitted `users.name`, creates
+the exact `User` inside the account transaction, provisions that user's private
+personal `SocialActor`, `SocialActorSetting`, and `UserOnboarding`, then returns
+the same model for Livewire authentication and session regeneration. The defect
+is downstream: `ProfilePresenter::owner()` substitutes translated prototype
+identity fields, merges `PrototypeState::profile()`, and supplies a Mia image;
+`header-actions.blade.php` independently links every authenticated account to
+`profile.mia`. The base feature-test account is also Mia, so existing header
+tests cannot distinguish the prototype from the authenticated principal.
+
+The result is a production identity split-brain:
+
+```text
+registered User / personal SocialActor
+                x
+translated Mia prototype / profile.mia
+```
+
+No new identity column or profile model is required. Historical Mia routes and
+fixtures may remain only as named demo compatibility data and may never act as
+an authenticated-owner fallback.
+
+### Target architecture and migration strategy
+
+- `users.id` and the canonical `User` account fields remain authoritative;
+  `User::name` is the only current-account display-name source.
+- `SocialActor.user_id -> User.id` remains the one-to-one personal social
+  adapter. Its stable `SocialActor.actor_key` supplies the canonical
+  `members.show` URL; a person's mutable name is never a route identity.
+- A cohesive authenticated-user presenter accepts an explicit `User` and
+  returns only header data: canonical name, safe initials/no-photo state,
+  accessible profile label, and the current actor URL. It does not read
+  translations or prototype/session state for identity and does not cache a
+  user projection globally.
+- `AppShell` resolves the authenticated principal at its presentation boundary
+  and uses the explicit presenter. A guest receives guest controls and no Mia
+  owner. Stale caller-supplied prototype arrays cannot define authenticated
+  chrome.
+- Canonical member presentation remains viewer-aware through
+  `MemberProfileController`, `SocialActorPolicy`, `SocialActorAccess`, block
+  checks, and `MemberProfileCatalog`. Owners may view their non-discoverable
+  actor; other viewers remain subject to status, verification,
+  discoverability, privacy, and block rules.
+- Prototype owner pages, Scout/Nori pages, reports, and compatibility URLs are
+  isolated as demo-only surfaces. Production self-profile navigation never
+  calls `profile.mia`, and `PrototypeState` never overrides the authenticated
+  header or canonical member profile.
+- Existing schema and actor backfill are sufficient, so no migration is
+  planned. Deployment retains the documented bounded
+  `social:backfill-actors` prerequisite for legacy accounts. Fresh
+  registrations require no seeder or backfill.
+
+### Affected boundaries
+
+Application paths include the new authenticated-owner presentation boundary,
+`AppShell`, `SiteHeader`, `HeaderActions`, canonical member controller/catalog,
+profile presenter/demo preview boundary, avatar/owner identity components,
+registration/authentication security hardening that is directly verified in
+scope, EN/LT/RU copy, and architecture/security tests. Documentation includes
+architecture, frontend, Livewire, security, authorization, testing, deployment,
+requirements compliance, changelog, this plan, and the work ledger. Existing
+forum/meetup paths are excluded except for attributable conflict-safe hunks
+required by a shared route or test inventory.
+
+### Ordered implementation ledger
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required tests / verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| AIR-01 | Repository contract and audit ledger | Principal plus read-only AIR-A..J | Auth, User, SocialActor, presentation, navigation, demo data, locales, tests | Current data flow and every Mia/prototype occurrence are classified with exact evidence; unrelated dirty work remains untouched | Git baseline, static call graph, specialist reports | in progress | Revert only AIR planning/audit additions |
+| AIR-02 | AIR-01 | Principal | Focused registration/header/member/security tests | RED proves a non-Mia authenticated user receives Mia/header route leakage on the old implementation and protects exact-user provisioning, privacy defaults, locale invariance, account switching, logout, and self/public access | Focused Pest files must fail for the intended old behavior before production edits | pending | Revert AIR tests only |
+| AIR-03 | AIR-02 | Principal | Authenticated-user presenter, AppShell/header/avatar presentation | Header name comes from `User::name`; URL comes from that user's `SocialActor`; no avatar inherits another person's image; guest/logout render no prior identity; normal header never calls `profile.mia` | Presenter unit/feature tests, header DOM assertions, EN/LT/RU matrix, query bound | pending | Revert presenter/shell slice; clear views |
+| AIR-04 | AIR-02..03 | Principal | Member profile controller/catalog, owner-profile/demo boundary | Canonical member/self page uses the viewed User and real member-since/pets/posts/social facts or honest empty states; owner-private access works; unrelated and blocked viewers remain denied; demo preview remains explicit | Self/public/private/block/IDOR/profile-count tests | pending | Revert profile slice; retain actor/settings/data |
+| AIR-05 | AIR-02..04 | Principal | Registration/auth/Livewire lifecycle hardening | Exact created User remains authenticated after session rotation; transaction rollback is complete; enabled/disabled verification and onboarding order remain intact; credential forms cannot degrade to GET; no browser field can set authority | Registration matrix, session/event/rollback/stale-component/security tests | pending | Revert lifecycle hardening; do not alter account data |
+| AIR-06 | AIR-03..05 | Principal | EN/LT/RU and accessibility copy, demo/prototype isolation | Runtime identity is data, labels are localized with placeholder parity, dynamic accessible profile labels are correct, person-specific demo copy is isolated, every remaining Mia/profile.mia occurrence is classified | Locale datasets, translation parity, architecture scans, accessibility assertions | pending | Revert copy/components together; clear views |
+| AIR-07 | AIR-03..06 | Independent read-only registration/auth/identity/actor/profile/demo/security/locale/test reviewers; principal dispositions | Frozen attributable diff | Reviewers explicitly answer source-of-truth/routing/demo/privacy questions; every reproduced in-scope finding is fixed and affected checks rerun | Reviewer reports and post-fix focused checks | pending | Revert only an unsafe attributable fix |
+| AIR-08 | AIR-07 | Principal | Documentation and complete repository boundary | Architecture, authorization, security, frontend, Livewire, testing, deployment, requirements/compliance and changelog describe observed behavior without claiming unrun gates | Documentation, generated-evidence, secret and full diff review | pending | Revert AIR documentation only |
+| AIR-09 | AIR-08 | Principal | Full locked application/runtime boundary | Pint, Larastan, focused/full Pest, fresh database, Composer, npm/Vite, route/view/config cache, browser where available, and diff gates run with observed results | User-specified commands plus applicable repository gates | pending | Stop publication on material failure |
+| AIR-10 | AIR-09 | Principal | Temporary Git index on `main` | Only AIR-owned paths/hunks are staged; staged diff/check are clean; coherent commit is created and non-force pushed only after gates | Temporary-index staged review, commit SHA, `git push origin main` result | pending | Do not commit/push on failure; after publication use an ordinary reviewed revert |
+
+### Acceptance and rollback
+
+The decisive journey is a fresh, unseeded database registering `Andrej Prus`,
+authenticating that exact row, completing the configured verification and
+onboarding gates, rendering `Andrej Prus` in authenticated chrome, and opening
+that user's stable member-actor URL with no inherited Mia avatar, location,
+bio, pets, posts, counts, or badges. A second `Anna Kowalska` session must
+replace every current-account value, and logout must remove the prior identity.
+The same account name remains unchanged under EN/LT/RU while only interface
+copy changes.
+
+Rollback is the eventual single AIR-owned commit. The package adds no schema,
+destructive data operation, dependency, queue, cache, or public-media change.
+Clear compiled route/config/view caches after rollback; preserve all user,
+actor, setting, onboarding, publication, relationship, block, and demo rows.
+
 ## Active Delivery: Full Stack And Dependency Upgrade (Prompt 03)
 
 Status: `mandatory discovery completed; implementation authorized after this
@@ -878,8 +987,8 @@ isolated temporary index if unrelated work appears before publication.
 
 ## Active Delivery: Meetups Implementation Plan
 
-Status: `approved after read-only A-M discovery; test-first implementation is
-starting` on 2026-08-30.
+Status: `implementation present on synchronized main; fresh final-gate and
+independent-review revalidation in progress` on 2026-08-30.
 
 This delivery completes `/meetups` as PawCircle's mobile-first social
 projection over the one canonical `ForumEvent` aggregate. It does not create a
@@ -899,6 +1008,14 @@ references to `7c96e504a5bfc9d8e32259971b25157bcb67fa3f` and later resumed its o
 dirty edits. The principal accepts the synchronized commit as the new base,
 preserves every onboarding path byte-for-byte, and will stage only Meetup-owned
 paths through a temporary `GIT_INDEX_FILE`.
+
+The fresh release revalidation began with a clean staged, unstaged, and
+untracked tree at synchronized `main`/`origin/main`
+`24c9b513c7b06114e416dd6007b18d41d3ca3e61`. The earlier onboarding-owned
+hunk is no longer present. Historical focused counts below remain discovery
+evidence only; MTP-13 through MTP-15 require newly observed commands, a frozen
+current diff, independent review dispositions, and a normal fast-forward push
+only if this revalidation creates an attributable commit.
 
 ### Current State And Reuse Decision
 
@@ -1000,9 +1117,10 @@ allocator.
 Attending pets use `ForumEventRegistrationPet` and canonical Taxon data. At
 register, approval, promotion and selected-pet update, the transaction requires
 an active account, active `PetProfile`, and current owner/manager authority for
-which `PetProfileAccess` permits `View`. This deliberately supports valid
-caregivers/sitters without granting the separate `ManageSocial` power to act as
-the pet actor. Pending, invited, suspended, revoked, future, expired, explicitly
+which canonical access grants `ManageCare` or `ManageSocial`; view-only access
+does not authorize Meetup representation. This supports current caregivers and
+social managers without treating ordinary viewing as authority to register a
+pet. Pending, invited, suspended, revoked, future, expired, explicitly
 denied, or legacy-revoked authority fails. Public presentation uses confirmed
 aggregate counts and localized species only; private pet identifiers/media
 remain absent unless the viewer independently has canonical access.

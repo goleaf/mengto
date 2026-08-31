@@ -15,6 +15,8 @@ return [
         'notifications' => 'Pranešimai',
         'messages' => 'Žinutės',
         'profile_for' => ':name profilis',
+        'sign_in' => 'Prisijungti',
+        'create_account' => 'Sukurti paskyrą',
     ],
     'items' => [
         'feed' => ['label' => 'Srautas', 'mobile_label' => 'Srautas'],

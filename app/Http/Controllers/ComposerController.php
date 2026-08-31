@@ -51,7 +51,7 @@ class ComposerController extends Controller
         ], true), 404);
 
         if ($kind === 'meetup') {
-            return to_route('meetups.index');
+            return to_route('meetups.create');
         }
 
         if ($kind === 'pet') {

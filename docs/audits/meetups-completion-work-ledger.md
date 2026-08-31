@@ -1,7 +1,7 @@
 # Meetups Completion Work Ledger
 
-Status: implementation complete; final gates and independent review in progress
-on 2026-08-30.
+Status: implementation present; fresh final gates and independent review in
+progress on 2026-08-30.
 
 This ledger coordinates the production completion of `/meetups` as the
 meetup-focused presentation of PawCircle's canonical `ForumEvent` aggregate.
@@ -33,6 +33,19 @@ alongside its onboarding-owned paths. The principal did not create or amend
 that commit and treats the synchronized commit as the new immutable base. The
 Meetup delivery will not revert, amend, restage, or otherwise absorb any of its
 onboarding changes.
+
+### Fresh release revalidation baseline
+
+- Branch: `main`.
+- Starting `HEAD`: `24c9b513c7b06114e416dd6007b18d41d3ca3e61`.
+- Starting `origin/main`: `24c9b513c7b06114e416dd6007b18d41d3ca3e61`.
+- Starting staged paths: none.
+- Starting unstaged paths: none.
+- Starting untracked paths: none.
+- The two most recent synchronized commits contain the Meetup implementation;
+  their presence is not accepted as current verification evidence. This run
+  repeats the applicable live, focused, full, browser, dependency, build,
+  cache, diff, and independent-review gates before any completion claim.
 
 ## Discovery analysts
 
@@ -86,10 +99,9 @@ files, caches, databases, Git state, generated output, or dependencies.
   order is server-owned priority, requested time, then identifier.
 - Attending-pet authority requires an active User, active `PetProfile`, and a
   current manager/owner relationship for which `PetProfileAccess` permits
-  `View`, rechecked inside every register/approve/promote transaction. Requiring
-  `ManageSocial` merely to attend is rejected because it would exclude valid
-  caregiver and sitter participation; publishing as the pet actor still
-  requires that stronger permission.
+  `ManageCare` or `ManageSocial`, rechecked inside every
+  register/approve/promote/check-in transaction. View-only access is rejected:
+  Meetup representation requires current care or social-management authority.
 - Public discovery receives only an approximate location projection. Legacy
   exact access remains encrypted and current-confirmed-state gated. Canonical
   Place exact access is explicit, event/purpose/grant bound, audited, and never
@@ -114,7 +126,7 @@ files, caches, databases, Git state, generated output, or dependencies.
 | MEET-F03 | critical | Active uniqueness and replay authority were unwritten. | Fixed with active scope, payload-bound operations, transitions and a passing two-process final-place race. Generalized pool tables remain unused and documented honestly. |
 | MEET-F04 | critical | Create wrote discoverable `Scheduled` and had no draft/publish/edit flow. | Fixed with dedicated create/edit/manage routes, incomplete private drafts, explicit publish validation and occurrence synchronization. |
 | MEET-F05 | high | Changed replay was accepted and terminal rejoin overwrote history. | Fixed: changed checksum conflicts; terminal rejoin creates a new active generation. |
-| MEET-F06 | high | Pet authority was stale and approval manufactured eligibility. | Fixed through transaction-time `PetProfileAccess::View` and manager-state revalidation. |
+| MEET-F06 | high | Pet authority was stale and approval manufactured eligibility. | Fixed through transaction-time `ManageCare`/`ManageSocial`, manager-state, and check-in revalidation; view-only access is denied. |
 | MEET-F07 | high | Blocks were absent from Meetup boundaries. | Fixed in query/policy/register/message/reveal paths; historical attendance is retained but inaccessible. |
 | MEET-F08 | high | Place reveal was unreachable and participation selection could be stale. | Fixed with latest registration selection and explicit audited grant-bound Place reveal. |
 | MEET-F09 | high | Cancellation/reschedule left occurrence and notification state split. | Fixed for base occurrences, active registrations, safe updates, history and post-commit notifications. |

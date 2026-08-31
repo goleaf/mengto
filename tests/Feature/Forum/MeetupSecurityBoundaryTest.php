@@ -3,44 +3,67 @@
 declare(strict_types=1);
 
 use App\Actions\CancelForumEvent;
+use App\Actions\ApplyOrganizationRestriction;
 use App\Actions\PublishForumEvent;
+use App\Actions\InviteToForumEvent;
+use App\Actions\PublishForumEventUpdate;
+use App\Actions\RevealPlaceExactLocation;
+use App\Actions\RespondToForumEventInvitation;
 use App\Actions\RevokeForumEventInvitation;
 use App\Actions\TransitionForumEventStatus;
 use App\Actions\UpdateForumEvent;
 use App\Data\RegisterForForumEventData;
+use App\Data\PlaceExactLocationRevealContext;
 use App\Data\UpdateForumEventData;
 use App\Enums\ForumEventFormat;
 use App\Enums\ForumEventInvitationStatus;
+use App\Enums\ForumEventMessageAudience;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventVerificationStatus;
 use App\Enums\ForumEventVisibility;
+use App\Enums\ForumEventUpdateAudience;
+use App\Enums\ForumEventUpdateType;
+use App\Enums\ForumGroupStatus;
+use App\Enums\OrganizationRestrictionCapability;
 use App\Enums\PetManagerRole;
 use App\Enums\PetManagerStatus;
 use App\Enums\PetProfilePermission;
+use App\Enums\PlaceAccessGrantStatus;
+use App\Enums\PlaceAccessPurpose;
+use App\Enums\UserStatus;
 use App\Livewire\Forum\ForumEventDirectory;
 use App\Livewire\Forum\ForumEventWorkspace;
 use App\Models\ForumEvent;
 use App\Models\ForumEventHistory;
 use App\Models\ForumEventInvitation;
+use App\Models\ForumEventMessage;
 use App\Models\ForumEventOccurrence;
 use App\Models\ForumEventParticipationTransition;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumNotification;
+use App\Models\ForumGroup;
+use App\Models\ForumGroupMembership;
+use App\Models\ForumModerationAction;
+use App\Models\ForumModerationActionDefinition;
+use App\Models\ForumModerationCase;
 use App\Models\Organization;
 use App\Models\OrganizationMembership;
 use App\Models\PetProfile;
 use App\Models\PetProfileManager;
 use App\Models\Place;
 use App\Models\PlaceAccessAudit;
+use App\Models\PlaceAccessGrant;
 use App\Models\SocialAccountBlock;
 use App\Models\User;
 use App\Services\ForumEventRegistrationService;
+use App\Services\EventState;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 
@@ -81,6 +104,12 @@ function meetupUpdateData(ForumEvent $event, array $overrides = []): UpdateForum
         animalWelfareRules: (string) ($overrides['animalWelfareRules'] ?? $event->animal_welfare_rules),
         emergencyContactPlan: (string) ($overrides['emergencyContactPlan'] ?? $event->emergency_contact_plan),
         idempotencyKey: (string) ($overrides['idempotencyKey'] ?? str()->uuid()),
+        registrationOpensAt: array_key_exists('registrationOpensAt', $overrides)
+            ? $overrides['registrationOpensAt']
+            : $event->registration_opens_at,
+        registrationClosesAt: array_key_exists('registrationClosesAt', $overrides)
+            ? $overrides['registrationClosesAt']
+            : $event->registration_closes_at,
     );
 }
 
@@ -198,6 +227,175 @@ test('canonical account block prevents meetup discovery direct access and regist
         $event,
         meetupRegistrationData('meetup-blocked-register-000001'),
     ))->toThrow(AuthorizationException::class);
+
+    expect(fn () => app(InviteToForumEvent::class)->handle(
+        $organizer,
+        $event,
+        $blocked,
+        now()->addWeek()->toImmutable(),
+        'meetup-blocked-invitation-0001',
+    ))->toThrow(ValidationException::class);
+
+    app(PublishForumEventUpdate::class)->handle(
+        $organizer,
+        $event,
+        ForumEventUpdateType::General,
+        ForumEventUpdateAudience::Attendees,
+        'Blocked contact update',
+        'This update must not reopen a contact channel after an account block.',
+        'meetup-blocked-update-notification-01',
+    );
+
+    expect(ForumEventInvitation::query()->where('invited_user_id', $blocked->id)->exists())
+        ->toBeFalse()
+        ->and(ForumNotification::query()->where('user_key', $blocked->actor_key)->exists())
+        ->toBeFalse();
+});
+
+test('account blocks redact attendee messages and organizer management identity', function (): void {
+    $organizer = User::factory()->create();
+    $viewer = User::factory()->create();
+    $blockedAttendee = User::factory()->create([
+        'name' => 'BLOCKED-ATTENDEE-NAME',
+        'email' => 'blocked-attendee@example.test',
+    ]);
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create();
+    ForumEventRegistration::factory()->for($event, 'event')->for($viewer, 'user')->confirmed()->create();
+    ForumEventRegistration::factory()->for($event, 'event')->for($blockedAttendee, 'user')->confirmed()->create();
+    ForumEventMessage::factory()
+        ->for($event, 'event')
+        ->for($blockedAttendee, 'sender')
+        ->create([
+            'audience' => ForumEventMessageAudience::Attendees,
+            'body' => 'BLOCKED-ATTENDEE-MESSAGE',
+        ]);
+    SocialAccountBlock::factory()->create([
+        'blocker_user_id' => $blockedAttendee->id,
+        'blocked_user_id' => $organizer->id,
+        'created_by_user_id' => $blockedAttendee->id,
+    ]);
+    SocialAccountBlock::factory()->create([
+        'blocker_user_id' => $viewer->id,
+        'blocked_user_id' => $blockedAttendee->id,
+        'created_by_user_id' => $viewer->id,
+    ]);
+
+    Livewire::actingAs($viewer)
+        ->test(ForumEventWorkspace::class, ['eventId' => $event->id])
+        ->assertDontSee('BLOCKED-ATTENDEE-MESSAGE');
+    Livewire::actingAs($organizer)
+        ->test(ForumEventWorkspace::class, [
+            'eventId' => $event->id,
+            'workspaceMode' => 'manage',
+        ])
+        ->assertDontSee('BLOCKED-ATTENDEE-NAME')
+        ->assertDontSee('blocked-attendee@example.test');
+});
+
+test('unverified accounts cannot receive protected meetup access or organizer authority', function (): void {
+    $unverified = User::factory()->unverified()->create();
+    $event = ForumEvent::factory()->create([
+        'exact_location' => 'UNVERIFIED-EXACT-LOCATION-MARKER gate 7419',
+        'online_url' => 'https://unverified-secret.example.test',
+    ]);
+    ForumEventRegistration::factory()
+        ->for($event, 'event')
+        ->for($unverified, 'user')
+        ->confirmed()
+        ->create();
+    $ownedEvent = ForumEvent::factory()->forOrganizer($unverified)->approvalRequired()->create();
+
+    expect(Gate::forUser($unverified)->allows('viewAccessDetails', $event))->toBeFalse()
+        ->and(Gate::forUser($unverified)->allows('update', $ownedEvent))->toBeFalse()
+        ->and(Gate::forUser($unverified)->allows('manageRegistrations', $ownedEvent))->toBeFalse()
+        ->and(Gate::forUser($unverified)->allows('checkIn', $ownedEvent))->toBeFalse();
+
+    $this->actingAs($unverified)
+        ->get(route('meetups.show', $event))
+        ->assertRedirect(route('verification.notice'));
+
+    Livewire::actingAs($unverified)
+        ->test(ForumEventWorkspace::class, [
+            'eventId' => $ownedEvent->id,
+            'workspaceMode' => 'manage',
+        ])
+        ->assertForbidden();
+});
+
+test('closed or archived groups close group meetup discovery and admission', function (
+    ForumGroupStatus $status,
+): void {
+    $member = User::factory()->create(['email_verified_at' => now()]);
+    $group = ForumGroup::factory()->create([
+        'status' => $status,
+        'closed_at' => now(),
+        'archived_at' => $status === ForumGroupStatus::Archived ? now() : null,
+    ]);
+    ForumGroupMembership::factory()->for($group, 'group')->for($member)->create();
+    $event = ForumEvent::factory()->for($group, 'group')->create([
+        'visibility' => ForumEventVisibility::Group,
+        'title' => 'CLOSED-GROUP-MEETUP-MARKER',
+    ]);
+
+    expect(ForumEvent::query()->visibleTo($member)->whereKey($event)->exists())->toBeFalse()
+        ->and(Gate::forUser($member)->allows('view', $event))->toBeFalse()
+        ->and(Gate::forUser($member)->allows('register', $event))->toBeFalse();
+
+    $this->actingAs($member)
+        ->get(route('meetups.index'))
+        ->assertOk()
+        ->assertDontSee('CLOSED-GROUP-MEETUP-MARKER');
+})->with([
+    'closed group' => [ForumGroupStatus::Closed],
+    'archived group' => [ForumGroupStatus::Archived],
+]);
+
+test('canonical registration mutations reject a forged cross event relation', function (): void {
+    $organizer = User::factory()->create();
+    $managedEvent = ForumEvent::factory()->forOrganizer($organizer)->approvalRequired()->create();
+    $otherEvent = ForumEvent::factory()->approvalRequired()->create();
+    $registration = ForumEventRegistration::factory()
+        ->for($otherEvent, 'event')
+        ->pending()
+        ->create();
+    $registration->setRelation('event', $managedEvent);
+
+    expect(fn () => app(ForumEventRegistrationService::class)->review(
+        $organizer,
+        $registration,
+        false,
+    ))->toThrow(ValidationException::class)
+        ->and($registration->fresh()->status)->toBe(ForumEventRegistrationStatus::Pending);
+});
+
+test('only an authorized organizer can mark a confirmed attendee as a no show after the meetup', function (): void {
+    $organizer = User::factory()->create();
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create([
+        'starts_at' => now()->subHours(2),
+        'ends_at' => now()->subHour(),
+    ]);
+    $registration = ForumEventRegistration::factory()
+        ->for($event, 'event')
+        ->for($participant, 'user')
+        ->confirmed()
+        ->create();
+
+    Livewire::actingAs($participant)
+        ->test(ForumEventWorkspace::class, ['eventId' => $event->id])
+        ->call('markNoShow', $registration->id)
+        ->assertForbidden();
+
+    Livewire::actingAs($organizer)
+        ->test(ForumEventWorkspace::class, [
+            'eventId' => $event->id,
+            'workspaceMode' => 'manage',
+        ])
+        ->call('markNoShow', $registration->id)
+        ->assertHasNoErrors()
+        ->assertSee(ForumEventRegistrationStatus::NoShow->label());
+
+    expect($registration->fresh()->status)->toBe(ForumEventRegistrationStatus::NoShow);
 });
 
 test('confirmed invite-only attendee keeps safe meetup access after invitation expiry', function (): void {
@@ -294,7 +492,7 @@ test('only an active pet owner or active care or social manager may attach a pet
     ))->toThrow(ValidationException::class);
 });
 
-test('view-only pet managers cannot represent a pet at a meetup', function (): void {
+test('a view-only pet manager cannot represent a pet at a meetup', function (): void {
     $owner = User::factory()->create();
     $previousOwner = User::factory()->create(['email_verified_at' => now()]);
     $event = ForumEvent::factory()->create();
@@ -315,6 +513,7 @@ test('pending expired revoked and explicitly denied pet access cannot be used fo
     PetManagerStatus $status,
     ?array $overrides,
     ?string $endsAt,
+    ?string $startsAt,
 ): void {
     $owner = User::factory()->create();
     $manager = User::factory()->create(['email_verified_at' => now()]);
@@ -325,6 +524,7 @@ test('pending expired revoked and explicitly denied pet access cannot be used fo
         'status' => $status,
         'permission_overrides' => $overrides,
         'ends_at' => $endsAt,
+        'starts_at' => $startsAt,
         'revoked_at' => $status === PetManagerStatus::Revoked ? now() : null,
     ]);
 
@@ -334,14 +534,45 @@ test('pending expired revoked and explicitly denied pet access cannot be used fo
         meetupRegistrationData('meetup-invalid-pet-access-0001', petProfileIds: [$pet->id]),
     ))->toThrow(ValidationException::class);
 })->with([
-    'pending invitation' => [PetManagerStatus::Invited, null, null],
-    'expired term' => [PetManagerStatus::Active, null, '-1 minute'],
-    'revoked access' => [PetManagerStatus::Revoked, null, null],
+    'pending invitation' => [PetManagerStatus::Invited, null, null, null],
+    'suspended manager' => [PetManagerStatus::Suspended, null, null, null],
+    'expired manager state' => [PetManagerStatus::Expired, null, null, null],
+    'declined manager' => [PetManagerStatus::Declined, null, null, null],
+    'expired term' => [PetManagerStatus::Active, null, '-1 minute', null],
+    'future manager' => [PetManagerStatus::Active, null, null, '+1 day'],
+    'revoked access' => [PetManagerStatus::Revoked, null, null, null],
     'denied representation' => [PetManagerStatus::Active, ['deny' => [
         PetProfilePermission::ManageCare->value,
         PetProfilePermission::ManageSocial->value,
-    ]], null],
+    ]], null, null],
 ]);
+
+test('foreign and missing pet identifiers share one non-enumerating error boundary', function (): void {
+    $owner = User::factory()->create();
+    $attendee = User::factory()->create(['email_verified_at' => now()]);
+    $event = ForumEvent::factory()->create();
+    $foreignPet = PetProfile::factory()->for($owner)->privateProfile()->create();
+    $service = app(ForumEventRegistrationService::class);
+    $errors = [];
+
+    foreach ([$foreignPet->id, $foreignPet->id + 10_000] as $index => $petId) {
+        try {
+            $service->register(
+                $attendee,
+                $event,
+                meetupRegistrationData('meetup-pet-oracle-boundary-000'.$index, petProfileIds: [$petId]),
+            );
+        } catch (ValidationException $exception) {
+            $errors[] = $exception->errors();
+        }
+    }
+
+    expect($errors)->toHaveCount(2)
+        ->and(array_keys($errors[0]))->toBe(['registrationForm.petProfileIds'])
+        ->and($errors[1])->toBe($errors[0])
+        ->and(ForumEventRegistration::query()->where('user_id', $attendee->id)->exists())
+        ->toBeFalse();
+});
 
 test('exact meetup location is absent from html and livewire state unless participation is confirmed', function (
     ForumEventRegistrationStatus $status,
@@ -422,6 +653,28 @@ test('only the organizer can publish a complete future draft and publication is 
 
     expect(fn () => app(PublishForumEvent::class)->handle($organizer, $pastDraft))
         ->toThrow(ValidationException::class);
+});
+
+test('an organization publication restriction is enforced by the dedicated publish action', function (): void {
+    $organizer = User::factory()->create();
+    $organization = Organization::factory()->forOwner($organizer)->verified()->create();
+    $event = ForumEvent::factory()
+        ->draft()
+        ->forOrganizer($organizer)
+        ->forOrganization($organization)
+        ->create();
+
+    app(ApplyOrganizationRestriction::class)->handle(
+        $organizer,
+        $organization,
+        OrganizationRestrictionCapability::PublishEvents,
+        'publication-safety-review',
+        'meetup-publish-restriction-0001',
+    );
+
+    expect(Gate::forUser($organizer)->allows('publish', $event))->toBeFalse()
+        ->and(fn () => app(PublishForumEvent::class)->handle($organizer, $event))
+        ->toThrow(AuthorizationException::class);
 });
 
 test('material organizer edits are authorized capacity safe encrypted and notify confirmed attendees without leaking location', function (): void {
@@ -556,7 +809,7 @@ test('waitlist promotion expires stale pet authority and promotes the next eligi
     expect($stale->refresh()->status)->toBe(ForumEventRegistrationStatus::Expired)
         ->and($stale->active_scope_key)->toBeNull()
         ->and($eligible->refresh()->status)->toBe(ForumEventRegistrationStatus::Confirmed)
-        ->and($eligible->waitlist_position)->toBeNull();
+        ->and($eligible->waitlist_position)->toBe(2);
 });
 
 test('check in revalidates current pet representation authority', function (): void {
@@ -665,6 +918,36 @@ test('pending invitation revocation is organizer scoped and removes private meet
         ->and(Gate::forUser($invitee)->allows('view', $event))->toBeFalse();
 });
 
+test('an organization invitation stops granting meetup access when membership expires', function (): void {
+    $organization = Organization::factory()->create();
+    $invitee = User::factory()->create();
+    $membership = OrganizationMembership::factory()
+        ->for($organization)
+        ->for($invitee)
+        ->active()
+        ->create();
+    $event = ForumEvent::factory()
+        ->forOrganization($organization)
+        ->invitationOnly()
+        ->create();
+    $invitation = ForumEventInvitation::factory()
+        ->for($event, 'event')
+        ->for($invitee, 'recipient')
+        ->create();
+
+    expect(Gate::forUser($invitee)->allows('view', $event))->toBeTrue();
+
+    $membership->forceFill(['expires_at' => now()->subMinute()])->save();
+
+    expect(Gate::forUser($invitee)->allows('view', $event))->toBeFalse()
+        ->and(ForumEvent::query()->visibleTo($invitee)->whereKey($event)->exists())->toBeFalse();
+    expect(fn () => app(RespondToForumEventInvitation::class)->handle(
+        $invitee,
+        $invitation,
+        true,
+    ))->toThrow(AuthorizationException::class);
+});
+
 test('public meetup exposes aggregate attendance without private participant or pet identity', function (): void {
     $attendee = User::factory()->create(['name' => 'PRIVATE-ATTENDEE-MARKER']);
     $viewer = User::factory()->create();
@@ -694,6 +977,7 @@ test('organizer management does not reveal a private pet without independent pro
     $event = ForumEvent::factory()->forOrganizer($organizer)->create();
     $pet = PetProfile::factory()->for($participant)->privateProfile()->create([
         'name' => 'ORGANIZER-PRIVATE-PET-MARKER',
+        'species' => 'ORGANIZER-PRIVATE-SPECIES-MARKER',
     ]);
     $registration = ForumEventRegistration::factory()
         ->for($event, 'event')
@@ -711,6 +995,7 @@ test('organizer management does not reveal a private pet without independent pro
             'workspaceMode' => 'manage',
         ])
         ->assertDontSee('ORGANIZER-PRIVATE-PET-MARKER')
+        ->assertDontSee('ORGANIZER-PRIVATE-SPECIES-MARKER')
         ->assertSee(__('forum_events.labels.private_pet'));
 });
 
@@ -850,6 +1135,111 @@ test('suspended accounts cannot create join or manage meetups and an inactive or
     ))->toThrow(AuthorizationException::class);
 });
 
+test('stale active user instances cannot join or edit after account suspension', function (): void {
+    $participant = User::factory()->create();
+    $organizer = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create();
+
+    User::query()->whereKey($participant)->update(['status' => UserStatus::Suspended->value]);
+    User::query()->whereKey($organizer)->update(['status' => UserStatus::Suspended->value]);
+
+    expect($participant->isActive())->toBeTrue()
+        ->and($organizer->isActive())->toBeTrue();
+    expect(fn () => app(ForumEventRegistrationService::class)->register(
+        $participant,
+        $event,
+        meetupRegistrationData('meetup-stale-suspended-join-01'),
+    ))->toThrow(AuthorizationException::class);
+    expect(fn () => app(UpdateForumEvent::class)->handle(
+        $organizer,
+        $event,
+        meetupUpdateData($event, ['title' => 'Stale actor edit must fail']),
+    ))->toThrow(AuthorizationException::class);
+});
+
+test('public meetup location summary rejects exact addresses and coordinates', function (string $unsafeSummary): void {
+    $organizer = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create([
+        'location_scope' => 'Vilnius city centre',
+    ]);
+
+    expect(fn () => app(UpdateForumEvent::class)->handle(
+        $organizer,
+        $event,
+        meetupUpdateData($event, ['locationScope' => $unsafeSummary]),
+    ))->toThrow(ValidationException::class);
+
+    expect($event->refresh()->location_scope)->toBe('Vilnius city centre');
+})->with([
+    'street address' => 'Gedimino gatvė 12',
+    'coordinate pair' => '54.6872, 25.2797',
+]);
+
+test('active canonical moderation restrictions close meetup organizer and content capabilities', function (): void {
+    $organizer = User::factory()->create();
+    $viewer = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create();
+    $suspension = ForumModerationActionDefinition::factory()->create([
+        'stable_key' => 'permanent-suspension',
+        'is_restrictive' => true,
+    ]);
+    $contentHiding = ForumModerationActionDefinition::factory()->create([
+        'stable_key' => 'temporary-content-hiding',
+        'is_restrictive' => true,
+        'requires_end_at' => true,
+    ]);
+    $case = ForumModerationCase::factory()->create([
+        'subject_type' => $event->getMorphClass(),
+        'subject_id' => (string) $event->id,
+    ]);
+    ForumModerationAction::factory()
+        ->for($case, 'moderationCase')
+        ->for($suspension, 'definition')
+        ->create(['target_user_id' => $organizer->id]);
+    ForumModerationAction::factory()
+        ->for($case, 'moderationCase')
+        ->for($contentHiding, 'definition')
+        ->create([
+            'target_user_id' => null,
+            'target_type' => $event->getMorphClass(),
+            'target_id' => (string) $event->id,
+            'ends_at' => now()->addDay(),
+        ]);
+
+    expect(Gate::forUser($organizer)->allows('update', $event))->toBeFalse()
+        ->and(Gate::forUser($organizer)->allows('invite', $event))->toBeFalse()
+        ->and(Gate::forUser($organizer)->allows('cancel', $event))->toBeFalse()
+        ->and(Gate::forUser($viewer)->allows('view', $event))->toBeFalse()
+        ->and(Gate::forUser($viewer)->allows('register', $event))->toBeFalse()
+        ->and(ForumEvent::query()->visibleTo($viewer)->whereKey($event)->exists())->toBeFalse();
+});
+
+test('an organizer cannot resume or message through a safety suspended meetup but may cancel it', function (): void {
+    $organizer = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create([
+        'status' => ForumEventStatus::SafetySuspended,
+        'safety_suspended_at' => now(),
+    ]);
+
+    expect(Gate::forUser($organizer)->allows('update', $event))->toBeFalse()
+        ->and(Gate::forUser($organizer)->allows('publishUpdate', $event))->toBeFalse()
+        ->and(Gate::forUser($organizer)->allows('transition', [
+            $event,
+            ForumEventStatus::Scheduled,
+        ]))->toBeFalse()
+        ->and(Gate::forUser($organizer)->allows('cancel', $event))->toBeTrue();
+
+    expect(fn () => app(PublishForumEventUpdate::class)->handle(
+        $organizer,
+        $event,
+        ForumEventUpdateType::General,
+        ForumEventUpdateAudience::Attendees,
+        'Unsafe organizer update',
+        'This message must not be sent while an independent safety hold is active.',
+        'meetup-safety-hold-update-0001',
+    ))->toThrow(AuthorizationException::class);
+});
+
 test('cancellation preserves history revokes participation access and sends deduplicated privacy safe notices', function (): void {
     $organizer = User::factory()->create();
     $participants = User::factory()->count(3)->create();
@@ -870,16 +1260,21 @@ test('cancellation preserves history revokes participation access and sends dedu
         $organizer,
         $event,
         'weather-safety',
-        'Severe weather makes this gathering unsafe.',
+        'CANCELLATION-PRIVATE-EXPLANATION gate 5517 severe weather details.',
         'meetup-cancel-notification-0001',
     );
     $action->handle(
         $organizer,
         $event->refresh(),
         'weather-safety',
-        'Severe weather makes this gathering unsafe.',
+        'CANCELLATION-PRIVATE-EXPLANATION gate 5517 severe weather details.',
         'meetup-cancel-notification-0001',
     );
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('meetups.show', $event))
+        ->assertOk()
+        ->assertDontSee('CANCELLATION-PRIVATE-EXPLANATION');
 
     expect($event->refresh()->status)->toBe(ForumEventStatus::Cancelled)
         ->and($registrations->map->refresh()->pluck('status')->unique()->all())
@@ -1066,9 +1461,14 @@ test('confirmed participant reveals a linked place only through a scoped audited
         ->test(ForumEventWorkspace::class, ['eventId' => $event->id])
         ->assertDontSee('PLACE-SECRET-ADDRESS')
         ->assertDontSee('PLACE-SECRET-INSTRUCTIONS')
+        ->assertSee(__('forum_events.actions.reveal_exact_place'))
         ->call('revealPlaceExactLocation')
         ->assertSee('PLACE-SECRET-ADDRESS')
-        ->assertSee('PLACE-SECRET-INSTRUCTIONS');
+        ->assertSee('PLACE-SECRET-INSTRUCTIONS')
+        ->assertSet('revealedPlaceLocation', [
+            'address' => 'PLACE-SECRET-ADDRESS gate 4821',
+            'instructions' => 'PLACE-SECRET-INSTRUCTIONS gate 4821',
+        ]);
 
     expect(PlaceAccessAudit::query()
         ->where('place_id', $place->id)
@@ -1080,6 +1480,73 @@ test('confirmed participant reveals a linked place only through a scoped audited
     app(ForumEventRegistrationService::class)->remove($organizer, $registration);
 
     $component->call('revealPlaceExactLocation')->assertForbidden();
+
+    expect(PlaceAccessGrant::query()
+        ->where('event_id', $event->id)
+        ->where('user_id', $attendee->id)
+        ->value('status'))->toBe(PlaceAccessGrantStatus::Revoked)
+        ->and(Place::query()->accessibleTo($attendee)->whereKey($place)->exists())->toBeFalse()
+        ->and(Gate::forUser($attendee)->allows('view', $place))->toBeFalse();
+});
+
+test('a meetup block invalidates direct event scoped place reveal', function (): void {
+    $organizer = User::factory()->create();
+    $attendee = User::factory()->create();
+    $place = Place::factory()->for($organizer, 'owner')->private()->create([
+        'exact_address' => 'BLOCKED-PLACE-SECRET gate 8723',
+    ]);
+    $event = ForumEvent::factory()->forOrganizer($organizer)->for($place)->create();
+    ForumEventRegistration::factory()
+        ->for($event, 'event')
+        ->for($attendee, 'user')
+        ->confirmed()
+        ->create();
+    $grant = app(\App\Actions\EnsureForumEventPlaceAccess::class)->handle($attendee, $event);
+
+    SocialAccountBlock::factory()->create([
+        'blocker_user_id' => $organizer->id,
+        'blocked_user_id' => $attendee->id,
+        'created_by_user_id' => $organizer->id,
+    ]);
+
+    expect(fn () => app(RevealPlaceExactLocation::class)->handle(
+        $attendee,
+        $place,
+        new PlaceExactLocationRevealContext(
+            purpose: PlaceAccessPurpose::EventAttendance,
+            eventId: $event->id,
+            channel: 'blocked-direct-test',
+        ),
+    ))->toThrow(AuthorizationException::class)
+        ->and(PlaceAccessAudit::query()->where('place_access_grant_id', $grant->id)->exists())
+        ->toBeFalse()
+        ->and(Place::query()->accessibleTo($attendee)->whereKey($place)->exists())
+        ->toBeFalse()
+        ->and(Gate::forUser($attendee)->allows('view', $place))->toBeFalse();
+});
+
+test('place manager reveal keeps verified meetup context in the audit trail', function (): void {
+    $organizer = User::factory()->create();
+    $place = Place::factory()->for($organizer, 'owner')->private()->create([
+        'exact_address' => 'MANAGER-PLACE-SECRET gate 9012',
+    ]);
+    $event = ForumEvent::factory()->forOrganizer($organizer)->for($place)->create();
+
+    app(RevealPlaceExactLocation::class)->handle(
+        $organizer,
+        $place,
+        new PlaceExactLocationRevealContext(
+            purpose: PlaceAccessPurpose::EventOperations,
+            eventId: $event->id,
+            channel: 'meetup-manager-test',
+        ),
+    );
+
+    $audit = PlaceAccessAudit::query()->where('place_id', $place->id)->sole();
+
+    expect($audit->event_id)->toBe($event->id)
+        ->and($audit->purpose)->toBe(PlaceAccessPurpose::EventOperations->value)
+        ->and($audit->channel)->toBe('meetup-manager-test');
 });
 
 test('organizer can save an incomplete private draft but cannot publish it until required details are complete', function (): void {
@@ -1121,6 +1588,27 @@ test('organizer can save an incomplete private draft but cannot publish it until
         ->toBeTrue();
 });
 
+test('the complete create form still requires an explicit review and publish step', function (): void {
+    $organizer = User::factory()->create();
+
+    Livewire::actingAs($organizer)
+        ->test(ForumEventDirectory::class, ['createOnly' => true])
+        ->set('form.title', 'Review before publishing meetup')
+        ->set('form.summary', 'A complete meetup proposal that is ready for organizer review.')
+        ->set('form.locationScope', 'Vilnius riverside area')
+        ->set('form.animalWelfareRules', 'Keep every participating animal supervised throughout the meetup.')
+        ->set('form.emergencyContactPlan', 'Contact the organizer and emergency services when immediate help is needed.')
+        ->call('create')
+        ->assertHasNoErrors();
+
+    $draft = ForumEvent::query()->where('organizer_user_id', $organizer->id)->sole();
+
+    expect($draft->status)->toBe(ForumEventStatus::Draft)
+        ->and($draft->published_at)->toBeNull()
+        ->and(ForumEvent::query()->visibleTo(User::factory()->create())->whereKey($draft)->exists())
+        ->toBeFalse();
+});
+
 test('requested and waitlisted users never receive the linked place reveal control', function (
     ForumEventRegistrationStatus $status,
 ): void {
@@ -1143,3 +1631,21 @@ test('requested and waitlisted users never receive the linked place reveal contr
     'requested' => [ForumEventRegistrationStatus::Pending],
     'waitlisted' => [ForumEventRegistrationStatus::Waitlisted],
 ]);
+
+test('legacy prototype meetup mutations and created routes are not authoritative alternatives', function (): void {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->post(route('actions.perform'), [
+            'action' => 'toggle-meetup',
+            'target' => 'small-dog-social',
+            'label' => 'Small dog social',
+        ])
+        ->assertSessionHasErrors('action');
+
+    expect(Route::has('meetups.created'))->toBeFalse()
+        ->and(method_exists(EventState::class, 'register'))->toBeFalse()
+        ->and(method_exists(EventState::class, 'cancelRegistration'))->toBeFalse()
+        ->and(method_exists(EventState::class, 'checkIn'))->toBeFalse()
+        ->and(method_exists(EventState::class, 'promoteWaitlist'))->toBeFalse();
+});

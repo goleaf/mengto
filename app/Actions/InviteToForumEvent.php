@@ -11,6 +11,7 @@ use App\Models\ForumEventInvitation;
 use App\Models\User;
 use App\Services\ForumEventAudit;
 use App\Services\ForumEventNotifier;
+use App\Services\SocialBlockService;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,7 @@ final readonly class InviteToForumEvent
         private Gate $gate,
         private ForumEventAudit $audit,
         private ForumEventNotifier $notifier,
+        private SocialBlockService $blocks,
     ) {}
 
     public function handle(
@@ -45,6 +47,11 @@ final readonly class InviteToForumEvent
         ])->validate();
 
         if (! $recipient->isActive() || $recipient->id === $actor->id) {
+            throw ValidationException::withMessages([
+                'invitationForm.recipient' => __('forum_events.validation.invitation_recipient'),
+            ]);
+        }
+        if ($this->blocks->accountBlockedBetween([$actor->id], [$recipient->id])) {
             throw ValidationException::withMessages([
                 'invitationForm.recipient' => __('forum_events.validation.invitation_recipient'),
             ]);
@@ -71,43 +78,95 @@ final readonly class InviteToForumEvent
             $idempotencyKey,
             $recipient,
         ): ForumEventInvitation {
-            ForumEvent::query()->lockForUpdate()->findOrFail($event->id);
-            $existing = ForumEventInvitation::query()
-                ->where('forum_event_id', $event->id)
-                ->where('invited_user_id', $recipient->id)
-                ->lockForUpdate()
-                ->first();
+            $lockedEvent = ForumEvent::query()->lockForUpdate()->findOrFail($event->id);
+            $lockedActor = User::query()->lockForUpdate()->findOrFail($actor->id);
+            $lockedRecipient = User::query()->lockForUpdate()->findOrFail($recipient->id);
+            $this->gate->forUser($lockedActor)->authorize('invite', $lockedEvent);
 
-            if ($existing?->isCurrent() === true
-                || $existing?->status === ForumEventInvitationStatus::Accepted
+            if (! $lockedRecipient->isActive()
+                || $lockedRecipient->id === $lockedActor->id
+                || $this->blocks->accountBlockedBetween([$lockedActor->id], [$lockedRecipient->id])
             ) {
-                return $existing;
-            }
-
-            if ($existing !== null) {
-                $existing->forceFill([
-                    'invited_by_user_id' => $actor->id,
-                    'idempotency_key' => $idempotencyKey,
-                    'status' => ForumEventInvitationStatus::Pending,
-                    'expires_at' => $expiresAt,
-                    'responded_at' => null,
-                ])->save();
-                $invitation = $existing;
-            } else {
-                $invitation = ForumEventInvitation::query()->create([
-                    'forum_event_id' => $event->id,
-                    'invited_by_user_id' => $actor->id,
-                    'invited_user_id' => $recipient->id,
-                    'stable_key' => 'event-invitation-'.Str::lower((string) Str::ulid()),
-                    'idempotency_key' => $idempotencyKey,
-                    'status' => ForumEventInvitationStatus::Pending,
-                    'expires_at' => $expiresAt,
+                throw ValidationException::withMessages([
+                    'invitationForm.recipient' => __('forum_events.validation.invitation_recipient'),
                 ]);
             }
 
+            if ($lockedEvent->responsible_organization_id !== null
+                && ! $lockedEvent->responsibleOrganization
+                    ->memberships()
+                    ->where('user_id', $lockedRecipient->id)
+                    ->where('status', OrganizationMembershipStatus::Active->value)
+                    ->where(function ($expiry): void {
+                        $expiry->whereNull('expires_at')->orWhere('expires_at', '>', now());
+                    })
+                    ->exists()
+            ) {
+                throw ValidationException::withMessages([
+                    'invitationForm.recipient' => __('forum_events.validation.organization_membership_required'),
+                ]);
+            }
+
+            $requestChecksum = $this->requestChecksum(
+                $lockedActor,
+                $lockedEvent,
+                $lockedRecipient,
+                $expiresAt,
+                $idempotencyKey,
+            );
+            $existingByIdempotency = ForumEventInvitation::query()
+                ->where('idempotency_key', $idempotencyKey)
+                ->lockForUpdate()
+                ->first();
+
+            if ($existingByIdempotency !== null) {
+                if (! hash_equals(
+                    $existingByIdempotency->request_checksum
+                        ?? $this->storedRequestChecksum($existingByIdempotency),
+                    $requestChecksum,
+                )) {
+                    throw ValidationException::withMessages([
+                        'invitationForm.recipient' => __('forum_events.validation.idempotency_conflict'),
+                    ]);
+                }
+
+                return $existingByIdempotency;
+            }
+
+            $activePairKey = hash('sha256', $lockedEvent->id.'|'.$lockedRecipient->id);
+            $existing = ForumEventInvitation::query()
+                ->where('active_pair_key', $activePairKey)
+                ->lockForUpdate()
+                ->first();
+
+            if ($existing !== null && $existing->expires_at->isPast()) {
+                $existing->forceFill([
+                    'active_pair_key' => null,
+                    'status' => ForumEventInvitationStatus::Expired,
+                    'responded_at' => $existing->responded_at ?? now(),
+                ])->save();
+                $existing = null;
+            }
+
+            if ($existing !== null) {
+                return $existing;
+            }
+
+            $invitation = ForumEventInvitation::query()->create([
+                'forum_event_id' => $lockedEvent->id,
+                'invited_by_user_id' => $lockedActor->id,
+                'invited_user_id' => $lockedRecipient->id,
+                'stable_key' => 'event-invitation-'.Str::lower((string) Str::ulid()),
+                'idempotency_key' => $idempotencyKey,
+                'active_pair_key' => $activePairKey,
+                'request_checksum' => $requestChecksum,
+                'status' => ForumEventInvitationStatus::Pending,
+                'expires_at' => $expiresAt,
+            ]);
+
             $this->audit->record(
                 event: $event,
-                actor: $actor,
+                actor: $lockedActor,
                 eventType: 'invited',
                 reasonCode: 'event-invitation-created',
                 summaryTranslationKey: 'forum_events.history.invited',
@@ -131,5 +190,32 @@ final readonly class InviteToForumEvent
         );
 
         return $invitation;
+    }
+
+    private function requestChecksum(
+        User $actor,
+        ForumEvent $event,
+        User $recipient,
+        CarbonImmutable $expiresAt,
+        string $idempotencyKey,
+    ): string {
+        return hash('sha256', json_encode([
+            'event_id' => $event->id,
+            'inviter_id' => $actor->id,
+            'recipient_id' => $recipient->id,
+            'expires_at' => $expiresAt->toISOString(),
+            'idempotency_key' => $idempotencyKey,
+        ], JSON_THROW_ON_ERROR));
+    }
+
+    private function storedRequestChecksum(ForumEventInvitation $invitation): string
+    {
+        return hash('sha256', json_encode([
+            'event_id' => $invitation->forum_event_id,
+            'inviter_id' => $invitation->invited_by_user_id,
+            'recipient_id' => $invitation->invited_user_id,
+            'expires_at' => $invitation->expires_at->toISOString(),
+            'idempotency_key' => $invitation->idempotency_key,
+        ], JSON_THROW_ON_ERROR));
     }
 }

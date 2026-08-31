@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'current' => [
+        'avatar_alt' => 'Profile image for :name',
+        'summary' => 'Your PawCircle account and private profile.',
+    ],
     'page' => [
         'browser_title' => ':name | PawCircle',
         'eyebrow' => 'Community member',

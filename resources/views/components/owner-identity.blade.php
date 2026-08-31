@@ -17,11 +17,19 @@
         variant="avatar"
         class="shrink-0"
     >
-        <x-avatar
-            :src="$owner['avatar']"
-            :alt="$owner['name']"
-            :size="$avatarSize"
-        />
+        @if ($owner['avatar'] !== null)
+            <x-avatar
+                :src="$owner['avatar']"
+                :alt="$owner['name']"
+                :size="$avatarSize"
+            />
+        @else
+            <x-initials-avatar
+                :initials="$owner['initials']"
+                tone="mint"
+                :size="$avatarSize === 'profile' ? 'regular' : 'compact'"
+            />
+        @endif
     </x-linked-media>
 
     <div class="min-w-0">
@@ -32,6 +40,8 @@
                 {{ $owner['name'] }}
             </x-optional-link>
         </h2>
-        <x-icon-text icon="map-pin" class="mt-1">{{ $owner['location'] }}</x-icon-text>
+        @if ($owner['location'] !== '')
+            <x-icon-text icon="map-pin" class="mt-1">{{ $owner['location'] }}</x-icon-text>
+        @endif
     </div>
 </div>

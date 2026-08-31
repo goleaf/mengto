@@ -71,6 +71,7 @@ use App\Services\ForumReportReasonCatalog;
 use App\Services\LocaleFormatter;
 use App\Services\PetProfileAccess;
 use App\Services\PetSpeciesLabel;
+use App\Services\SocialBlockService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -121,7 +122,7 @@ final class ForumEventWorkspace extends Component
 
     public string $feedback = '';
 
-    /** @var array{address: string|null, latitude: string|null, longitude: string|null, instructions: string|null}|null */
+    /** @var array{address: string|null, instructions: string|null}|null */
     #[Locked]
     public ?array $revealedPlaceLocation = null;
 
@@ -135,16 +136,20 @@ final class ForumEventWorkspace extends Component
 
     private PetProfileAccess $petProfileAccess;
 
+    private SocialBlockService $socialBlocks;
+
     public function boot(
         ForumEventOrganizerVerification $organizerVerification,
         LocaleFormatter $formatter,
         PetProfileAccess $petProfileAccess,
         PetSpeciesLabel $petSpeciesLabel,
+        SocialBlockService $socialBlocks,
     ): void {
         $this->organizerVerification = $organizerVerification;
         $this->formatter = $formatter;
         $this->petProfileAccess = $petProfileAccess;
         $this->petSpeciesLabel = $petSpeciesLabel;
+        $this->socialBlocks = $socialBlocks;
     }
 
     public function mount(int $eventId, string $workspaceMode = 'detail'): void
@@ -153,7 +158,12 @@ final class ForumEventWorkspace extends Component
         $this->workspaceMode = in_array($workspaceMode, ['detail', 'edit', 'manage'], true)
             ? $workspaceMode
             : 'detail';
-        Gate::authorize('view', $this->eventModel());
+        $event = $this->eventModel();
+        Gate::authorize(match ($this->workspaceMode) {
+            'edit' => 'update',
+            'manage' => 'manageRegistrations',
+            default => 'view',
+        }, $event);
         $this->initializeForms();
     }
 
@@ -178,8 +188,7 @@ final class ForumEventWorkspace extends Component
         $authorizedUser = $user instanceof User ? $user : null;
         $canViewAccess = Gate::forUser($authorizedUser)->allows('viewAccessDetails', $event);
         $canRevealPlaceExact = $canViewAccess
-            && $event->place instanceof Place
-            && Gate::forUser($authorizedUser)->allows('viewExactLocation', $event->place);
+            && $event->place instanceof Place;
         $confirmedCount = (int) $event->registrations()
             ->whereIn('status', $this->seatConsumingStatuses())
             ->count();
@@ -240,11 +249,25 @@ final class ForumEventWorkspace extends Component
             'photo_consent' => $event->photo_consent_mode->label(),
             'animal_welfare_rules' => $event->animal_welfare_rules,
             'registration_policy' => $event->registration_policy->label(),
+            'registration_policy_key' => $event->registration_policy->value,
+            'registration_opens_at' => $event->registration_opens_at === null
+                ? null
+                : $this->formatter->dateTime($event->registration_opens_at, $event->timezone),
+            'registration_closes_at' => $event->registration_closes_at === null
+                ? null
+                : $this->formatter->dateTime($event->registration_closes_at, $event->timezone),
             'waitlist_enabled' => $event->waitlist_enabled,
             'capacity' => $event->capacity,
             'confirmed_count' => $legacyAttendees + $confirmedCount + $confirmedGuests,
             'legacy_attendee_count' => $legacyAttendees,
             'waitlist_count' => $waitlistCount,
+            'registration_action_label' => match (true) {
+                $event->capacity !== null
+                    && ($legacyAttendees + $confirmedCount + $confirmedGuests) >= $event->capacity
+                    && $event->waitlist_enabled => __('forum_events.actions.join_waitlist'),
+                $event->registration_policy === ForumEventRegistrationPolicy::Approval => __('forum_events.actions.request_to_join'),
+                default => __('forum_events.actions.register'),
+            },
             'cost' => $event->cost_minor === 0
                 ? __('forum_events.labels.cost_free')
                 : $this->formatter->currency($event->cost_minor / 100, $event->currency),
@@ -262,7 +285,8 @@ final class ForumEventWorkspace extends Component
                 'legacy_image_alt',
                 $event->title,
             ),
-            'can_register' => Gate::forUser($authorizedUser)->allows('register', $event),
+            'can_register' => $event->registrationWindowIsOpen()
+                && Gate::forUser($authorizedUser)->allows('register', $event),
             'can_invite' => Gate::forUser($authorizedUser)->allows('invite', $event),
             'can_update' => Gate::forUser($authorizedUser)->allows('update', $event),
             'can_publish' => Gate::forUser($authorizedUser)->allows('publish', $event),
@@ -592,10 +616,10 @@ final class ForumEventWorkspace extends Component
                 'lock_version',
             ])
             ->with([
-                'occurrence:id,forum_event_id,starts_at,timezone',
+                'occurrence:id,forum_event_id,starts_at,ends_at,timezone',
                 'version:id,forum_event_id,version_number',
                 'registrationPets:id,forum_event_registration_id,pet_profile_id,eligibility_status',
-                'registrationPets.petProfile:id,user_id,name,species,status,visibility,is_discoverable',
+                'registrationPets.petProfile:id,user_id,name,species,species_confidence,status,visibility,is_discoverable',
                 'registrationPets.petProfile.managers' => static function (Relation $managers) use ($user): void {
                     $managers->where('user_id', $user->id);
                 },
@@ -616,7 +640,9 @@ final class ForumEventWorkspace extends Component
             'attendance_format' => $registration->attendance_format->label(),
             'guest_count' => $registration->guest_count,
             'photo_consent' => $registration->photo_consent->label(),
-            'waitlist_position' => $registration->waitlist_position,
+            'waitlist_position' => $registration->status === ForumEventRegistrationStatus::Waitlisted
+                ? $registration->waitlist_position
+                : null,
             'occurrence' => $registration->occurrence === null
                 ? null
                 : $this->formatter->dateTime(
@@ -736,7 +762,7 @@ final class ForumEventWorkspace extends Component
                 return [
                     'id' => $update->id,
                     'title' => Lang::has($update->title) ? __($update->title) : $update->title,
-                    'body' => $update->body,
+                    'body' => Lang::has($update->body) ? __($update->body) : $update->body,
                     'type' => $update->type->label(),
                     'audience' => $update->audience->label(),
                     'author_name' => $author instanceof User
@@ -762,6 +788,7 @@ final class ForumEventWorkspace extends Component
 
         $event = $this->eventModel();
         $isOrganizer = $event->isOrganizer($user) || $user->isAdministrator();
+        $blockedUserIds = $this->socialBlocks->blockedUserIdsFor($user);
 
         return ForumEventMessage::query()
             ->select([
@@ -774,6 +801,10 @@ final class ForumEventWorkspace extends Component
             ])
             ->with('sender:id,name')
             ->where('forum_event_id', $event->id)
+            ->when(
+                $blockedUserIds !== [],
+                static fn (Builder $messages) => $messages->whereNotIn('sender_user_id', $blockedUserIds),
+            )
             ->when(! $isOrganizer, function (Builder $messages) use ($user): void {
                 $messages->where(function (Builder $visible) use ($user): void {
                     $visible
@@ -841,6 +872,7 @@ final class ForumEventWorkspace extends Component
         $event = $this->eventModel();
         Gate::authorize('manageRegistrations', $event);
         $viewer = $this->requireUser();
+        $blockedUserIds = $this->socialBlocks->blockedUserIdsFor($viewer);
 
         return ForumEventRegistration::query()
             ->select([
@@ -861,16 +893,20 @@ final class ForumEventWorkspace extends Component
             ])
             ->with([
                 'user:id,name,email',
-                'petProfile:id,user_id,name,species,status,visibility,is_discoverable',
+                'petProfile:id,user_id,name,species,species_confidence,status,visibility,is_discoverable',
                 'occurrence:id,forum_event_id,starts_at,timezone',
                 'version:id,forum_event_id,version_number',
                 'registrationPets:id,forum_event_registration_id,pet_profile_id,eligibility_status',
-                'registrationPets.petProfile:id,user_id,name,species,status,visibility,is_discoverable',
+                'registrationPets.petProfile:id,user_id,name,species,species_confidence,status,visibility,is_discoverable',
                 'registrationPets.petProfile.managers' => static function (Relation $managers) use ($viewer): void {
                     $managers->where('user_id', $viewer->id);
                 },
             ])
             ->where('forum_event_id', $event->id)
+            ->when(
+                $blockedUserIds !== [],
+                static fn (Builder $registrations) => $registrations->whereNotIn('user_id', $blockedUserIds),
+            )
             ->orderBy('status')
             ->orderBy('waitlist_position')
             ->orderBy('id')
@@ -888,6 +924,9 @@ final class ForumEventWorkspace extends Component
                     ->all(),
                 'status' => $registration->status->label(),
                 'status_key' => $registration->status->value,
+                'check_in_available' => ($registration->occurrence?->starts_at ?? $event->starts_at)->isPast()
+                    && ($registration->occurrence?->ends_at ?? $event->ends_at)->isFuture(),
+                'no_show_available' => ($registration->occurrence?->ends_at ?? $event->ends_at)->isPast(),
                 'attendance_format' => $registration->attendance_format->label(),
                 'guest_count' => $registration->guest_count,
                 'photo_consent' => $registration->photo_consent->label(),
@@ -917,11 +956,13 @@ final class ForumEventWorkspace extends Component
             ];
         }
 
+        $canView = $this->petProfileAccess->canView($pet, $viewer);
+
         return [
-            'name' => $this->petProfileAccess->canView($pet, $viewer)
-                ? $pet->name
-                : __('forum_events.labels.private_pet'),
-            'species' => $pet->species,
+            'name' => $canView ? $pet->name : __('forum_events.labels.private_pet'),
+            'species' => $canView
+                ? $this->petSpeciesLabel->for($pet->species, $pet->species_confidence)
+                : null,
             'eligibility' => $registrationPet->eligibility_status->label(),
         ];
     }
@@ -1112,7 +1153,7 @@ final class ForumEventWorkspace extends Component
             $ensureAccess->handle($user, $event);
         }
 
-        $this->revealedPlaceLocation = $reveal->handle(
+        $revealed = $reveal->handle(
             $user,
             $event->place,
             new PlaceExactLocationRevealContext(
@@ -1121,6 +1162,10 @@ final class ForumEventWorkspace extends Component
                 channel: 'meetup-detail',
             ),
         );
+        $this->revealedPlaceLocation = [
+            'address' => $revealed['address'],
+            'instructions' => $revealed['instructions'],
+        ];
     }
 
     public function cancelRegistration(ForumEventRegistrationService $registrations): void
@@ -1247,6 +1292,20 @@ final class ForumEventWorkspace extends Component
             ->findOrFail($registrationId);
         $registrations->checkOut($user, $registration);
         $this->feedback = __('forum_events.feedback.checked_out');
+        $this->refreshComputed();
+    }
+
+    public function markNoShow(
+        int $registrationId,
+        ForumEventRegistrationService $registrations,
+    ): void {
+        $user = $this->requireUser();
+        Gate::forUser($user)->authorize('manageRegistrations', $this->eventModel());
+        $registration = ForumEventRegistration::query()
+            ->where('forum_event_id', $this->eventId)
+            ->findOrFail($registrationId);
+        $registrations->markNoShow($user, $registration);
+        $this->feedback = __('forum_events.feedback.no_show');
         $this->refreshComputed();
     }
 

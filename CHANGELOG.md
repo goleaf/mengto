@@ -17,6 +17,12 @@ status, invalidated evidence, external blockers, and rollback guidance are in
   notifications, and explicit audited exact-Place reveal without introducing
   duplicate event, pet, block, location, chat, or notification domains.
 
+- Hardened that projection with URL-backed date/type/species/city/availability
+  discovery filters, server-authoritative registration windows, fit-aware
+  historical waitlisting, occurrence-window check-in and organizer no-show,
+  invitation generations with replay checks, and removal of the prototype
+  preference-backed RSVP mutation path.
+
 - Replaced all 5,860 mechanically generated `messages` and `ui` translation
   keys and their first-party references with readable names, preserved EN/LT/RU
   catalogue values, made normalized collisions fail closed, distinguished

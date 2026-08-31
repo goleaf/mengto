@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Database\Factories\ForumModerationActionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -96,5 +97,16 @@ final class ForumModerationAction extends Model
     public function reversals(): HasMany
     {
         return $this->hasMany(self::class, 'reversal_of_action_id');
+    }
+
+    /** @param Builder<ForumModerationAction> $query @return Builder<ForumModerationAction> */
+    public function scopeCurrentlyActive(Builder $query): Builder
+    {
+        return $query
+            ->whereNull('reversed_at')
+            ->where('starts_at', '<=', now())
+            ->where(function (Builder $expiry): void {
+                $expiry->whereNull('ends_at')->orWhere('ends_at', '>', now());
+            });
     }
 }

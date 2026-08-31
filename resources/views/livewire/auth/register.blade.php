@@ -5,7 +5,8 @@
         description="{{ __('auth.register.description') }}"
     />
 
-    <form wire:submit="register" class="auth-form">
+    <form method="POST" action="{{ route('register') }}" wire:submit="register" class="auth-form">
+        @csrf
         <x-auth-field
             id="register-name"
             label="{{ __('auth.fields.name') }}"

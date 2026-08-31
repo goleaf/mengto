@@ -15,6 +15,8 @@ return [
         'notifications' => 'Notifications',
         'messages' => 'Messages',
         'profile_for' => ':name profile',
+        'sign_in' => 'Sign in',
+        'create_account' => 'Create account',
     ],
     'items' => [
         'feed' => ['label' => 'Feed', 'mobile_label' => 'Feed'],

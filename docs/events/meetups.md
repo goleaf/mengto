@@ -23,6 +23,12 @@ All routes use the portal account boundary plus private-response middleware.
 They emit no-store, no-referrer, and noindex headers. Route identifiers never
 grant access and no state-changing GET route exists.
 
+`MeetupDirectoryPreviewController` and `MeetupDetailPreviewController` retain
+their historical names for route and page-identity compatibility. They are now
+production entry adapters: each coordinates authorization and a Livewire view,
+while query scopes, policies, Actions, and the canonical models own behaviour.
+Renaming them would create route/inventory churn without removing domain logic.
+
 ## Lifecycle And Discovery
 
 An organizer may save an incomplete `Draft`; it is visible only to the
@@ -32,6 +38,10 @@ content, synchronizes the default occurrence, and records history. Published
 Meetups may be cancelled but are not hard-deleted. Cancellation retains the
 record and participant history, closes active participation, synchronizes
 occurrences, publishes a safe update, and sends deduplicated notifications.
+Optional registration-open and registration-close timestamps are stored in UTC,
+edited in the Meetup timezone, validated again at publication, and rechecked by
+every registration mutation. Incomplete drafts may omit them; contradictory
+windows cannot be published.
 
 Upcoming, ongoing, and past presentation is derived from UTC timestamps and
 the stored IANA timezone. No cron job changes a Meetup merely because its end
@@ -39,7 +49,10 @@ time passed. Discover includes only authorized, non-draft, non-cancelled,
 upcoming records and sorts by the next start time. Search is limited to safe
 title, public location summary, and controlled category/type data; exact
 address fields are neither selected for cards nor searched. Results are
-paginated.
+paginated. URL-backed filters cover canonical date periods, event type,
+Taxon-backed species, approximate city, and registration availability. Their
+validated values are applied in Eloquent before pagination; invalid values
+fall back to safe defaults rather than expanding visibility.
 
 Visibility and admission remain separate:
 
@@ -56,8 +69,12 @@ Visibility and admission remain separate:
 
 `ForumEventRegistration` is the durable participation record. Meetup-facing
 states use `Pending`, `Confirmed`, `Waitlisted`, participant cancellation,
-organizer removal, manual check-in, and historical attended/completed states.
-Pending and waitlisted users are never treated as confirmed.
+organizer decline/removal, `CheckedIn`, `NoShow`, and historical
+attended/completed states. Pending, waitlisted, declined, cancelled, and
+no-show users are never treated as confirmed. Check-in is permitted only for a
+currently confirmed registration during its occurrence window. No-show is a
+manual organizer decision after the occurrence ends; no scheduler fabricates
+attendance results.
 
 Registration is handled inside an immediate/row-locking transaction. The
 service reloads and locks the event and occurrence, reauthorizes, recalculates
@@ -69,8 +86,11 @@ identical replay returns the same result and changed replay fails.
 
 Capacity counts people, not pets. A full Meetup either rejects the request or
 creates a waitlisted registration. Waitlist position is monotonically assigned
-and promotion orders by position then durable row ID under the same event
-lock. Leaving or organizer removal promotes the first entry that fits; an
+and retained as historical queue evidence after a transition. Promotion orders
+by position then durable row ID under the same event lock and selects the
+earliest eligible party that fits the available quantity; a larger party stays
+queued without blocking a later fitting party. Leaving or organizer removal
+promotes the first fitting entry; an
 approval rechecks capacity and may move the request to the waitlist. Immutable
 participation-transition rows record successful state changes.
 
@@ -87,9 +107,10 @@ registration.
 A person may attend with no pet when the configured policy permits it. Every
 selected `PetProfile` is resolved server-side. Registration, organizer
 approval, and waitlist promotion require an active profile and current
-`PetProfileAccess::View` authority for the authenticated owner or active
-manager. Pending, invited, suspended, revoked, expired, future, or explicitly
-denied manager records fail. Species and age rules use the canonical Taxon and
+owner or active-manager authority that grants `ManageCare` or `ManageSocial`.
+View-only access is insufficient. Pending, invited, suspended, revoked,
+expired, future, or explicitly denied manager records fail. Species and age
+rules use the canonical Taxon and
 PetProfile data; Meetup does not store a second species taxonomy or any
 vaccination document, veterinary record, microchip scan, or medical proof.
 
@@ -126,7 +147,11 @@ Meetup invitations are internal, authenticated, recipient-bound records with
 expiry and status. There is no bearer-token share link to forward. Only the
 intended active account can accept or decline; capacity and current
 eligibility are checked again when that account registers. Organizers can list
-and revoke pending invitations without deleting history.
+and revoke pending invitations without deleting history. A unique active-pair
+key permits only one live invitation for an event/recipient, while terminal
+responses release that key so later invitations append a new generation. A
+canonical request checksum makes identical retries idempotent and rejects a
+changed payload under the same operation key.
 
 Organizer operations use policies and locked records for edit, publish,
 request approval/rejection, participant removal, waitlist promotion,
@@ -160,10 +185,11 @@ card queries.
 
 ## Focused Evidence And Remaining Release Boundary
 
-The 2026-08-30 focused command covering Meetup preview, event schema/workflow,
-lifecycle, query budgets, security/privacy, real two-process capacity race,
-and translation parity passed 72 tests with 38,738 assertions. This is focused
-evidence only. Repository-wide static analysis, full serial Pest, browser
+The 2026-08-30 isolated focused commands covering Meetup preview,
+schema/workflow, lifecycle, security/privacy, registration windows, attendance,
+Pet/social/Place regressions, query budgets, real two-process capacity race,
+accessibility, and translation parity passed 145 tests with 43,503 assertions.
+This is focused evidence only. Repository-wide static analysis, full serial Pest, browser
 viewports, dependency audits, build/cache checks, final independent review,
 commit, and push remain separate release gates until their commands are
 observed and recorded in the Meetup work ledger.

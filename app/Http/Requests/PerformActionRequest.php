@@ -65,7 +65,6 @@ class PerformActionRequest extends FormRequest
                 Rule::in([
                     'toggle-follow',
                     'toggle-group',
-                    'toggle-meetup',
                     'toggle-paw',
                     'toggle-save',
                     'toggle-setting',

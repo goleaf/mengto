@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'current' => [
+        'avatar_alt' => ':name profilio vaizdas',
+        'summary' => 'Jūsų PawCircle paskyra ir privatus profilis.',
+    ],
     'page' => [
         'browser_title' => ':name | PawCircle',
         'eyebrow' => 'Bendruomenės narys',

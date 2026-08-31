@@ -37,6 +37,7 @@ final class RegistrationForm extends Form
                 'required',
                 'string',
                 'confirmed',
+                'max:4096',
                 Password::min(12)->mixedCase()->numbers(),
             ],
         ];

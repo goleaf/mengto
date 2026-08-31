@@ -54,5 +54,7 @@ final readonly class CreateForumEventData
         public ?int $responsibleOrganizationId = null,
         public ?int $placeId = null,
         public ?int $venueId = null,
+        public ?CarbonImmutable $registrationOpensAt = null,
+        public ?CarbonImmutable $registrationClosesAt = null,
     ) {}
 }

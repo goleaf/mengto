@@ -38,6 +38,22 @@ final class ForumEventInvitationFactory extends ApplicationFactory
                     ->whereKey($invitation->forum_event_id)
                     ->value('organizer_user_id');
             }
+
+            if ($invitation->forum_event_id !== null && $invitation->invited_user_id !== null) {
+                $invitation->active_pair_key = in_array($invitation->status, [
+                    ForumEventInvitationStatus::Pending,
+                    ForumEventInvitationStatus::Accepted,
+                ], true) && $invitation->expires_at->isFuture()
+                    ? hash('sha256', $invitation->forum_event_id.'|'.$invitation->invited_user_id)
+                    : null;
+                $invitation->request_checksum = hash('sha256', json_encode([
+                    'event_id' => $invitation->forum_event_id,
+                    'inviter_id' => $invitation->invited_by_user_id,
+                    'recipient_id' => $invitation->invited_user_id,
+                    'expires_at' => $invitation->expires_at->toISOString(),
+                    'idempotency_key' => $invitation->idempotency_key,
+                ], JSON_THROW_ON_ERROR));
+            }
         });
     }
 

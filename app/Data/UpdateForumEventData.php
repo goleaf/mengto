@@ -8,6 +8,7 @@ use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
+use Carbon\CarbonImmutable;
 
 final readonly class UpdateForumEventData
 {
@@ -27,5 +28,7 @@ final readonly class UpdateForumEventData
         public string $animalWelfareRules,
         public string $emergencyContactPlan,
         public string $idempotencyKey,
+        public ?CarbonImmutable $registrationOpensAt = null,
+        public ?CarbonImmutable $registrationClosesAt = null,
     ) {}
 }

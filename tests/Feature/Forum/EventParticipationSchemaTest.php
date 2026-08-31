@@ -57,3 +57,24 @@ test('registration states expose an explicit transition and capacity contract', 
         ->and(ForumEventRegistrationStatus::Confirmed->consumesCapacity())->toBeTrue()
         ->and(ForumEventRegistrationStatus::Completed->consumesCapacity())->toBeFalse();
 });
+
+test('event invitations preserve history while enforcing one active recipient generation', function (): void {
+    $indexes = collect(Schema::getIndexes('forum_event_invitations'))->keyBy('name');
+
+    expect(Schema::hasColumns('forum_event_invitations', [
+        'active_pair_key',
+        'request_checksum',
+    ]))->toBeTrue()
+        ->and($indexes)->toHaveKey('forum_event_invitations_active_pair_unique')
+        ->and($indexes['forum_event_invitations_active_pair_unique']['unique'])->toBeTrue()
+        ->and($indexes)->toHaveKey('forum_event_invitations_pair_history_idx')
+        ->and($indexes)->not->toHaveKey('forum_event_invitations_event_user_unique');
+});
+
+test('meetup moderation visibility uses an indexed canonical target lookup', function (): void {
+    $indexes = collect(Schema::getIndexes('forum_moderation_actions'))->keyBy('name');
+
+    expect($indexes)->toHaveKey('forum_moderation_actions_target_active_idx')
+        ->and($indexes['forum_moderation_actions_target_active_idx']['columns'])
+        ->toBe(['target_type', 'target_id', 'reversed_at', 'starts_at', 'ends_at']);
+});

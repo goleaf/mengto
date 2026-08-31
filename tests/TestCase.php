@@ -6,6 +6,7 @@ namespace Tests;
 
 use App\Enums\UserStatus;
 use App\Models\User;
+use App\Services\SocialActorResolver;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -50,6 +51,7 @@ abstract class TestCase extends BaseTestCase
             'timezone' => 'Europe/Vilnius',
             'status' => UserStatus::Active,
         ]);
+        app(SocialActorResolver::class)->forUser($this->authenticatedUser);
 
         $this->actingAs($this->authenticatedUser);
     }

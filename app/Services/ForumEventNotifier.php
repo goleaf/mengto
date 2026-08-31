@@ -13,6 +13,7 @@ final class ForumEventNotifier
 {
     public function __construct(
         private readonly Translator $translator,
+        private readonly SocialBlockService $blocks,
     ) {}
 
     /**
@@ -27,6 +28,17 @@ final class ForumEventNotifier
         string $deduplicationKey,
         array $replace = [],
     ): void {
+        if (! $user->isActive()
+            || ($event->organizer_user_id !== null
+                && $event->organizer_user_id !== $user->id
+                && $this->blocks->accountBlockedBetween(
+                    [$event->organizer_user_id],
+                    [$user->id],
+                ))
+        ) {
+            return;
+        }
+
         ForumNotification::query()->firstOrCreate(
             ['deduplication_key' => $deduplicationKey],
             [

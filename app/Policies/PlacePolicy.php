@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\ForumEventStatus;
 use App\Enums\OrganizationRole;
 use App\Enums\OrganizationStatus;
 use App\Enums\PlaceAccessPurpose;
@@ -11,10 +12,14 @@ use App\Enums\PlaceStatus;
 use App\Enums\PlaceVisibility;
 use App\Models\OrganizationMembership;
 use App\Models\Place;
+use App\Models\PlaceAccessGrant;
 use App\Models\User;
+use Illuminate\Contracts\Auth\Access\Gate;
 
 final class PlacePolicy
 {
+    public function __construct(private readonly Gate $gate) {}
+
     public function viewAny(?User $user): bool
     {
         return $user?->isActive() === true && $user->hasVerifiedEmail();
@@ -39,7 +44,7 @@ final class PlacePolicy
         return $place->visibility === PlaceVisibility::Public
             || $place->isManagedBy($user)
             || $place->isVisibleToOrganizationMember($user)
-            || $place->activeExactGrantFor($user) !== null;
+            || $this->hasCurrentlyAuthorizedGrant($user, $place);
     }
 
     public function update(?User $user, Place $place): bool
@@ -97,7 +102,7 @@ final class PlacePolicy
     {
         return $user?->isActive() === true
             && $place->status === PlaceStatus::Active
-            && ($place->isManagedBy($user) || $place->activeExactGrantFor($user) !== null);
+            && ($place->isManagedBy($user) || $this->hasCurrentlyAuthorizedGrant($user, $place));
     }
 
     public function delete(?User $user, Place $place): bool
@@ -141,5 +146,34 @@ final class PlacePolicy
                     ->where('status', OrganizationStatus::Active->value)
                     ->whereNull('archived_at'))
                 ->exists();
+    }
+
+    private function hasCurrentlyAuthorizedGrant(User $user, Place $place): bool
+    {
+        return $place->activeExactGrantsFor($user)
+            ->with('event')
+            ->get()
+            ->contains(function (PlaceAccessGrant $grant) use ($place, $user): bool {
+                if (! in_array($grant->purpose, [
+                    PlaceAccessPurpose::EventAttendance,
+                    PlaceAccessPurpose::EventOperations,
+                ], true)) {
+                    return true;
+                }
+
+                $event = $grant->event;
+
+                if ($event === null || $event->place_id !== $place->id) {
+                    return false;
+                }
+
+                if ($grant->purpose === PlaceAccessPurpose::EventAttendance) {
+                    return $this->gate->forUser($user)->allows('viewAccessDetails', $event);
+                }
+
+                return $event->status !== ForumEventStatus::Cancelled
+                    && ! $event->hasEnded()
+                    && $this->gate->forUser($user)->allows('update', $event);
+            });
     }
 }

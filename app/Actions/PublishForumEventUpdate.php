@@ -101,7 +101,7 @@ final readonly class PublishForumEventUpdate
         ForumEventRegistration::query()
             ->where('forum_event_id', $event->id)
             ->whereIn('status', ForumEvent::participantAccessStatusValues())
-            ->with('user:id,actor_key,locale')
+            ->with('user:id,actor_key,locale,status')
             ->orderBy('id')
             ->chunkById(100, function ($registrations) use ($event, $update): void {
                 foreach ($registrations as $registration) {

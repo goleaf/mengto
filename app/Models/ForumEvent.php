@@ -14,6 +14,8 @@ use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
+use App\Enums\ForumGroupStatus;
+use App\Services\ForumModerationGuard;
 use Carbon\CarbonImmutable;
 use Database\Factories\ForumEventFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -62,6 +64,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property ForumEventPhotoConsent $photo_consent_mode
  * @property ForumEventPetParticipation $pet_participation_mode
  * @property ForumEventRegistrationPolicy $registration_policy
+ * @property CarbonImmutable|null $registration_closes_at
+ * @property CarbonImmutable|null $registration_opens_at
  * @property string|null $refund_policy
  * @property CarbonImmutable $starts_at
  * @property ForumEventStatus $status
@@ -379,7 +383,12 @@ final class ForumEvent extends Model
      */
     public function scopeVisibleTo(Builder $query, ?User $user): Builder
     {
-        $query->whereNull('archived_at');
+        $query
+            ->whereNull('archived_at')
+            ->whereDoesntHave('moderationActions', static fn (Builder $actions) => $actions
+                ->currentlyActive()
+                ->whereHas('definition', static fn (Builder $definitions) => $definitions
+                    ->whereIn('stable_key', ForumModerationGuard::CONTENT_HIDING_KEYS)));
 
         if ($user?->isAdministrator() === true) {
             return $query;
@@ -458,11 +467,16 @@ final class ForumEvent extends Model
                                     ->where('visibility', ForumEventVisibility::Group->value)
                                     ->whereHas('group', function (Builder $group) use ($user): void {
                                         $group
-                                            ->where('owner_user_id', $user->id)
-                                            ->orWhereHas('memberships', function (Builder $memberships) use ($user): void {
-                                                $memberships
-                                                    ->where('user_id', $user->id)
-                                                    ->where('state', 'active');
+                                            ->where('status', ForumGroupStatus::Active->value)
+                                            ->whereNull('archived_at')
+                                            ->where(function (Builder $authority) use ($user): void {
+                                                $authority
+                                                    ->where('owner_user_id', $user->id)
+                                                    ->orWhereHas('memberships', function (Builder $memberships) use ($user): void {
+                                                        $memberships
+                                                            ->where('user_id', $user->id)
+                                                            ->where('state', 'active');
+                                                    });
                                             });
                                     });
                             })
@@ -472,6 +486,13 @@ final class ForumEvent extends Model
                                         ForumEventVisibility::Private->value,
                                         ForumEventVisibility::Invitation->value,
                                     ])
+                                    ->where(function (Builder $tenant) use ($user): void {
+                                        $tenant
+                                            ->whereNull('responsible_organization_id')
+                                            ->orWhereHas('responsibleOrganization.activeMemberships', function (Builder $memberships) use ($user): void {
+                                                $memberships->where('user_id', $user->id);
+                                            });
+                                    })
                                     ->where(function (Builder $participant) use ($user): void {
                                         $participant
                                             ->whereHas('invitations', function (Builder $invitations) use ($user): void {
@@ -495,6 +516,12 @@ final class ForumEvent extends Model
         });
     }
 
+    /** @return MorphMany<ForumModerationAction, $this> */
+    public function moderationActions(): MorphMany
+    {
+        return $this->morphMany(ForumModerationAction::class, 'target');
+    }
+
     public function isOrganizer(User $user): bool
     {
         return $this->organizer_user_id === $user->id
@@ -510,6 +537,14 @@ final class ForumEvent extends Model
     {
         return $this->ends_at->isPast()
             || $this->status === ForumEventStatus::Completed;
+    }
+
+    public function registrationWindowIsOpen(?CarbonImmutable $at = null): bool
+    {
+        $at ??= CarbonImmutable::now();
+
+        return ($this->registration_opens_at === null || $this->registration_opens_at->lessThanOrEqualTo($at))
+            && ($this->registration_closes_at === null || $this->registration_closes_at->isAfter($at));
     }
 
     public function registrationFor(User $user): ?ForumEventRegistration

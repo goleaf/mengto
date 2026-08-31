@@ -1,4 +1,4 @@
-@props(['owner', 'activeSection'])
+@props(['owner' => null, 'activeSection'])
 
 <header
     data-site-header
@@ -6,13 +6,17 @@
 >
     <div class="site-header__utility" data-header-utility>
         <x-brand-link />
-        <x-header-search :active="$activeSection === 'discover'" class="site-header__search" />
+        @if ($owner !== null)
+            <x-header-search :active="$activeSection === 'discover'" class="site-header__search" />
+        @endif
         <x-header-actions :owner="$owner" :active-section="$activeSection" />
     </div>
 
-    <div class="site-header__navigation" data-header-primary>
-        <div class="site-header__navigation-inner">
-            <x-primary-navigation :active-section="$activeSection" />
+    @if ($owner !== null)
+        <div class="site-header__navigation" data-header-primary>
+            <div class="site-header__navigation-inner">
+                <x-primary-navigation :active-section="$activeSection" />
+            </div>
         </div>
-    </div>
+    @endif
 </header>

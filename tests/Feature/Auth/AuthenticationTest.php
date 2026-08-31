@@ -105,6 +105,38 @@ test('authentication fields keep explicit labels and browser autocomplete contra
         ->assertSee('register-password-feedback', false);
 });
 
+test('credential forms fail safely as post requests when livewire is unavailable', function () {
+    auth()->logout();
+
+    foreach ([
+        route('login'),
+        route('register'),
+        route('password.reset', ['token' => 'safe-fallback-token']),
+    ] as $url) {
+        $xpath = responseXPath($this->get($url)->assertOk());
+        $form = $xpath->query('//form[contains(concat(" ", normalize-space(@class), " "), " auth-form ")]')->item(0);
+
+        expect($form)->not->toBeNull()
+            ->and(mb_strtolower((string) $form?->attributes?->getNamedItem('method')?->nodeValue))
+            ->toBe('post')
+            ->and((string) $form?->attributes?->getNamedItem('action')?->nodeValue)
+            ->toBe($url)
+            ->and($xpath->query('//form[contains(concat(" ", normalize-space(@class), " "), " auth-form ")]//input[@name="_token"]')->length)
+            ->toBe(1);
+    }
+
+    $this->actingAs(User::factory()->create());
+    $xpath = responseXPath($this->get(route('password.confirm'))->assertOk());
+
+    expect(mb_strtolower((string) $xpath->evaluate(
+        'string(//form[contains(concat(" ", normalize-space(@class), " "), " auth-form ")]/@method)',
+    )))->toBe('post')
+        ->and($xpath->evaluate('string(//form[contains(concat(" ", normalize-space(@class), " "), " auth-form ")]/@action)'))
+        ->toBe(route('password.confirm'))
+        ->and($xpath->query('//form[contains(concat(" ", normalize-space(@class), " "), " auth-form ")]//input[@name="_token"]')->length)
+        ->toBe(1);
+});
+
 test('every authentication password field has an independent localized visibility toggle', function () {
     auth()->logout();
 
@@ -347,6 +379,23 @@ test('registration validates every untrusted account field', function () {
             'form.password',
         ]);
 
+    $this->assertGuest();
+});
+
+test('registration rejects an oversized password before hashing', function () {
+    auth()->logout();
+    $password = str_repeat('Secure-Paw-2026', 300);
+
+    Livewire::test(Register::class)
+        ->set('form.name', 'Bounded Password')
+        ->set('form.email', 'bounded-password@example.test')
+        ->set('form.password', $password)
+        ->set('form.password_confirmation', $password)
+        ->call('register')
+        ->assertHasErrors(['form.password']);
+
+    expect(User::query()->where('email', 'bounded-password@example.test')->exists())
+        ->toBeFalse();
     $this->assertGuest();
 });
 

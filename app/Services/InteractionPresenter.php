@@ -77,7 +77,6 @@ final class InteractionPresenter
             return [
                 ...$meetup,
                 'key' => $key,
-                'rsvp' => $this->state->isActive('meetups', $key),
                 'media_target' => $this->routeTarget(
                     $meetup['detail_route'] ?? null,
                     (array) ($meetup['detail_parameters'] ?? []),

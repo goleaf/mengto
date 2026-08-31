@@ -61,11 +61,33 @@
             </select>
         </label>
         <label class="forum-form__field">
-            <span>{{ __('forum_events.filters.status') }}</span>
+            <span>{{ __('forum_events.filters.date') }}</span>
             <select wire:model.live="period">
                 <option value="upcoming">{{ __('forum_events.filters.upcoming') }}</option>
                 <option value="past">{{ __('forum_events.filters.past') }}</option>
                 <option value="all">{{ __('forum_events.filters.all_periods') }}</option>
+            </select>
+        </label>
+        <label class="forum-form__field">
+            <span>{{ __('forum_events.filters.species') }}</span>
+            <select wire:model.live="species">
+                <option value="all">{{ __('forum_events.filters.all_species') }}</option>
+                @forelse ($this->speciesOptions as $value => $label)
+                    <option value="{{ $value }}">{{ $label }}</option>
+                @empty
+                @endforelse
+            </select>
+        </label>
+        <label class="forum-form__field">
+            <span>{{ __('forum_events.filters.city') }}</span>
+            <input type="search" wire:model.live.debounce.400ms="city" maxlength="120">
+        </label>
+        <label class="forum-form__field">
+            <span>{{ __('forum_events.filters.availability') }}</span>
+            <select wire:model.live="availability">
+                <option value="all">{{ __('forum_events.filters.all_availability') }}</option>
+                <option value="registration_open">{{ __('forum_events.filters.registration_open') }}</option>
+                <option value="waitlist_available">{{ __('forum_events.filters.waitlist_available') }}</option>
             </select>
         </label>
     </form>
@@ -75,7 +97,7 @@
             <h2 id="forum-event-results-heading">
                 {{ trans_choice('forum_events.labels.event_count', $this->events->total(), ['count' => $this->events->total()]) }}
             </h2>
-            <span wire:loading wire:target="search,type,format,period" role="status">
+            <span wire:loading wire:target="search,type,format,period,species,city,availability" role="status">
                 {{ __('forum_journals.actions.filtering') }}
             </span>
         </div>
@@ -138,7 +160,17 @@
                                 @endif
                             </dd>
                         </div>
+                        <div>
+                            <dt class="font-semibold">{{ __('forum_events.fields.registration_policy') }}</dt>
+                            <dd>{{ $event['registration_policy'] }}</dd>
+                        </div>
                     </dl>
+
+                    @if ($event['waitlist_count'] > 0)
+                        <p class="text-sm">{{ trans_choice('forum_events.labels.waitlist', $event['waitlist_count'], ['count' => $event['waitlist_count']]) }}</p>
+                    @elseif ($event['capacity'] !== null && $event['confirmed_count'] >= $event['capacity'] && $event['waitlist_enabled'] && $event['registration_open'])
+                        <p class="text-sm">{{ __('forum_events.labels.waitlist_available') }}</p>
+                    @endif
 
                     @if ($event['taxa'] !== [])
                         <ul class="flex flex-wrap gap-2" aria-label="{{ __('forum_events.fields.taxon_ids') }}">
@@ -170,6 +202,9 @@
                 <div class="forum-form md:col-span-2 xl:col-span-3">
                     <h3>{{ __('forum_events.empty.events_title') }}</h3>
                     <p>{{ __('forum_events.empty.events_description') }}</p>
+                    <button type="button" class="forum-button min-h-11 justify-self-start" wire:click="clearFilters">
+                        {{ __('forum_events.actions.clear_filters') }}
+                    </button>
                 </div>
             @endforelse
         </div>
@@ -290,6 +325,16 @@
                         <span>{{ __('forum_events.fields.timezone') }}</span>
                         <input type="text" wire:model="form.timezone" maxlength="64" required>
                         @error('form.timezone') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.registration_opens_at') }}</span>
+                        <input type="datetime-local" wire:model="form.registrationOpensAt">
+                        @error('form.registrationOpensAt') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.registration_closes_at') }}</span>
+                        <input type="datetime-local" wire:model="form.registrationClosesAt">
+                        @error('form.registrationClosesAt') <small role="alert">{{ $message }}</small> @enderror
                     </label>
                     <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.capacity') }}</span>
@@ -463,7 +508,7 @@
                         wire:target="saveDraft,create"
                     >
                         <x-ui-icon name="calendar-plus" />
-                        <span wire:loading.remove wire:target="create">{{ __('forum_events.actions.create') }}</span>
+                        <span wire:loading.remove wire:target="create">{{ __('forum_events.actions.review_draft') }}</span>
                         <span wire:loading wire:target="create">{{ __('forum_events.actions.creating') }}</span>
                     </button>
                 </div>

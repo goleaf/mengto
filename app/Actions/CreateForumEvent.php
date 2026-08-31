@@ -23,6 +23,7 @@ use App\Models\Place;
 use App\Models\Taxon;
 use App\Models\User;
 use App\Models\Venue;
+use App\Rules\ApproximateMeetupLocation;
 use App\Services\ForumEventAudit;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -180,6 +181,8 @@ final readonly class CreateForumEvent
                 'timezone' => $data->timezone,
                 'capacity' => $data->capacity,
                 'registration_policy' => $data->registrationPolicy,
+                'registration_opens_at' => $data->registrationOpensAt,
+                'registration_closes_at' => $data->registrationClosesAt,
                 'waitlist_enabled' => $data->waitlistEnabled,
                 'location_scope' => $lockedPlace->public_region ?? $data->locationScope,
                 'exact_location' => $lockedPlace === null ? $data->exactLocation : null,
@@ -244,6 +247,8 @@ final readonly class CreateForumEvent
             'timezone' => $data->timezone,
             'capacity' => $data->capacity,
             'registration_policy' => $data->registrationPolicy->value,
+            'registration_opens_at' => $data->registrationOpensAt?->toAtomString(),
+            'registration_closes_at' => $data->registrationClosesAt?->toAtomString(),
             'location_scope' => $data->locationScope,
             'exact_location' => $data->exactLocation,
             'online_url' => $data->onlineUrl,
@@ -286,6 +291,8 @@ final readonly class CreateForumEvent
                 'required',
                 Rule::enum(ForumEventRegistrationPolicy::class),
             ],
+            'registration_opens_at' => ['nullable', 'date', 'before:starts_at'],
+            'registration_closes_at' => ['nullable', 'date', 'before_or_equal:starts_at'],
             'location_scope' => [
                 Rule::requiredIf(
                     $data->format !== ForumEventFormat::Online && $data->placeId === null,
@@ -293,6 +300,7 @@ final readonly class CreateForumEvent
                 'nullable',
                 'string',
                 'max:190',
+                new ApproximateMeetupLocation,
             ],
             'exact_location' => [
                 Rule::prohibitedIf($data->placeId !== null),
@@ -376,9 +384,21 @@ final readonly class CreateForumEvent
             $rules['refund_policy'] = ['nullable', 'string', 'max:5000'];
             $rules['animal_welfare_rules'] = ['nullable', 'string', 'max:10000'];
             $rules['emergency_contact_plan'] = ['nullable', 'string', 'max:10000'];
+            $rules['registration_opens_at'] = ['nullable', 'date'];
+            $rules['registration_closes_at'] = ['nullable', 'date'];
         }
 
         Validator::make($input, $rules)->validate();
+
+        if (! $draft
+            && $data->registrationOpensAt !== null
+            && $data->registrationClosesAt !== null
+            && ! $data->registrationClosesAt->isAfter($data->registrationOpensAt)
+        ) {
+            throw ValidationException::withMessages([
+                'eventForm.registrationClosesAt' => __('forum_events.validation.registration_window_order'),
+            ]);
+        }
 
         if ($data->venueId !== null && $data->placeId === null) {
             throw ValidationException::withMessages([

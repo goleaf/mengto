@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\User;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
+use LogicException;
+
 final class ProfilePresenter
 {
     public function __construct(
@@ -11,12 +15,28 @@ final class ProfilePresenter
         private readonly PetProfileCatalog $pets,
         private readonly CreatedContentPresenter $created,
         private readonly PetFriendCatalog $friendPets,
+        private readonly AuthFactory $auth,
+        private readonly AuthenticatedUserPresenter $authenticatedUsers,
     ) {}
 
     /**
      * @return array<string, mixed>
      */
     public function owner(): array
+    {
+        $user = $this->auth->guard()->user();
+
+        if (! $user instanceof User) {
+            throw new LogicException('Authenticated owner presentation requires a User.');
+        }
+
+        return $this->authenticatedUsers->present($user);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function demoOwner(): array
     {
         $profileUrl = route('profile.mia');
         $owner = [
@@ -45,7 +65,7 @@ final class ProfilePresenter
     public function ownerProfile(): array
     {
         $owner = [
-            ...$this->owner(),
+            ...$this->demoOwner(),
             'slug' => 'mia-carter',
             'role' => __('member_profiles.owner.identity.role'),
             'member_since' => __('member_profiles.owner.identity.member_since'),
@@ -123,7 +143,7 @@ final class ProfilePresenter
             ),
             'tabs' => $this->ownerTabs($tab, $audience),
             'active_tab' => $tab,
-            'pets' => $petsVisible && $petsRequired ? $this->pets() : [],
+            'pets' => $petsVisible && $petsRequired ? $this->demoPets() : [],
             'pets_restricted' => ! $petsVisible,
             'moments' => $postsVisible && $momentsRequired ? $this->ownerMoments() : [],
             'posts_restricted' => ! $postsVisible,
@@ -228,7 +248,7 @@ final class ProfilePresenter
             'friends' => $friendsVisible ? $this->pets->friends($slug) : [],
             'friends_restricted' => ! $friendsVisible,
             'care_visible' => $careVisible,
-            'managers' => $this->pets->managers($slug, $this->owner()),
+            'managers' => $this->pets->managers($slug, $this->demoOwner()),
             'privacy' => $this->privacySummary($privacy),
             'badges' => [
                 ['icon' => 'paw-print', 'label' => __('messages.pet_profile_complete'), 'tone' => 'mint'],
@@ -242,6 +262,14 @@ final class ProfilePresenter
      * @return array<int, array<string, mixed>>
      */
     public function pets(): array
+    {
+        return $this->created->pets();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function demoPets(): array
     {
         $pets = array_values(array_filter([
             $this->pet('scout'),

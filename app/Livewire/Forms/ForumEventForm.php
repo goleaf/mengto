@@ -13,6 +13,7 @@ use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
 use App\Models\User;
+use App\Rules\ApproximateMeetupLocation;
 use App\Rules\EventOrganizableOrganization;
 use Carbon\CarbonImmutable;
 use Carbon\Exceptions\InvalidFormatException;
@@ -46,6 +47,10 @@ final class ForumEventForm extends Form
     public ?int $capacity = null;
 
     public string $registrationPolicy = 'open';
+
+    public string $registrationOpensAt = '';
+
+    public string $registrationClosesAt = '';
 
     public bool $waitlistEnabled = true;
 
@@ -125,6 +130,8 @@ final class ForumEventForm extends Form
                 'required',
                 Rule::enum(ForumEventRegistrationPolicy::class),
             ],
+            'registrationOpensAt' => ['nullable', 'date_format:'.self::LOCAL_DATE_TIME_FORMAT],
+            'registrationClosesAt' => ['nullable', 'date_format:'.self::LOCAL_DATE_TIME_FORMAT],
             'waitlistEnabled' => ['boolean'],
             'locationScope' => [
                 Rule::requiredIf(
@@ -133,6 +140,7 @@ final class ForumEventForm extends Form
                 'nullable',
                 'string',
                 'max:190',
+                new ApproximateMeetupLocation,
             ],
             'exactLocation' => [
                 Rule::prohibitedIf($this->placeId !== null),
@@ -230,6 +238,8 @@ final class ForumEventForm extends Form
             'timezone' => __('forum_events.fields.timezone'),
             'capacity' => __('forum_events.fields.capacity'),
             'registrationPolicy' => __('forum_events.fields.registration_policy'),
+            'registrationOpensAt' => __('forum_events.fields.registration_opens_at'),
+            'registrationClosesAt' => __('forum_events.fields.registration_closes_at'),
             'locationScope' => __('forum_events.fields.location_scope'),
             'exactLocation' => __('forum_events.fields.exact_location'),
             'placeId' => __('places.fields.place'),
@@ -277,6 +287,14 @@ final class ForumEventForm extends Form
             $rules['refundPolicy'] = ['nullable', 'string', 'max:5000'];
             $rules['animalWelfareRules'] = ['nullable', 'string', 'max:10000'];
             $rules['emergencyContactPlan'] = ['nullable', 'string', 'max:10000'];
+            $rules['registrationOpensAt'] = [
+                'nullable',
+                'date_format:'.self::LOCAL_DATE_TIME_FORMAT,
+            ];
+            $rules['registrationClosesAt'] = [
+                'nullable',
+                'date_format:'.self::LOCAL_DATE_TIME_FORMAT,
+            ];
             $rules['responsibleOrganizationId'] = [
                 'nullable',
                 'integer',
@@ -315,6 +333,35 @@ final class ForumEventForm extends Form
                         'attribute' => __('forum_events.fields.ends_at'),
                         'date' => __('forum_events.fields.starts_at'),
                     ]));
+                }
+
+                $registrationOpensAt = $this->registrationOpensAt === ''
+                    ? null
+                    : $this->parseLocalDateTime($this->registrationOpensAt, $this->timezone);
+                $registrationClosesAt = $this->registrationClosesAt === ''
+                    ? null
+                    : $this->parseLocalDateTime($this->registrationClosesAt, $this->timezone);
+
+                if (! $draft
+                    && $registrationOpensAt !== null
+                    && ! $registrationOpensAt->isBefore($startsAt)
+                ) {
+                    $validator->errors()->add('registrationOpensAt', __('forum_events.validation.registration_window_before_start'));
+                }
+
+                if (! $draft
+                    && $registrationClosesAt !== null
+                    && $registrationClosesAt->isAfter($startsAt)
+                ) {
+                    $validator->errors()->add('registrationClosesAt', __('forum_events.validation.registration_window_before_start'));
+                }
+
+                if (! $draft
+                    && $registrationOpensAt !== null
+                    && $registrationClosesAt !== null
+                    && ! $registrationClosesAt->isAfter($registrationOpensAt)
+                ) {
+                    $validator->errors()->add('registrationClosesAt', __('forum_events.validation.registration_window_order'));
                 }
 
                 if (! $draft
@@ -393,6 +440,12 @@ final class ForumEventForm extends Form
                 : null,
             placeId: isset($validated['placeId']) ? (int) $validated['placeId'] : null,
             venueId: isset($validated['venueId']) ? (int) $validated['venueId'] : null,
+            registrationOpensAt: filled($validated['registrationOpensAt'] ?? null)
+                ? $this->parseLocalDateTime((string) $validated['registrationOpensAt'], $timezone)?->utc()
+                : null,
+            registrationClosesAt: filled($validated['registrationClosesAt'] ?? null)
+                ? $this->parseLocalDateTime((string) $validated['registrationClosesAt'], $timezone)?->utc()
+                : null,
         );
     }
 

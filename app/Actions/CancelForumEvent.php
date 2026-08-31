@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\ForumEventRegistrationStatus;
+use App\Enums\ForumEventInvitationStatus;
 use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventUpdateAudience;
 use App\Enums\ForumEventUpdateType;
+use App\Enums\PlaceAccessGrantStatus;
+use App\Enums\PlaceAccessPurpose;
 use App\Models\ForumEvent;
 use App\Models\ForumEventParticipationTransition;
+use App\Models\ForumEventInvitation;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumEventUpdate;
+use App\Models\PlaceAccessGrant;
 use App\Models\User;
 use App\Services\ForumEventAudit;
 use App\Services\ForumEventNotifier;
@@ -36,7 +41,7 @@ final readonly class CancelForumEvent
         string $explanation,
         string $idempotencyKey,
     ): ForumEvent {
-        $this->gate->forUser($actor)->authorize('update', $event);
+        $this->gate->forUser($actor)->authorize('cancel', $event);
         Validator::make([
             'reason_code' => $reasonCode,
             'explanation' => $explanation,
@@ -57,7 +62,7 @@ final readonly class CancelForumEvent
             $locked = ForumEvent::query()
                 ->lockForUpdate()
                 ->findOrFail($event->id);
-            $this->gate->forUser($actor)->authorize('update', $locked);
+            $this->gate->forUser($actor)->authorize('cancel', $locked);
 
             if ($locked->status === ForumEventStatus::Cancelled) {
                 return $locked;
@@ -106,7 +111,6 @@ final readonly class CancelForumEvent
                         $registration->forceFill([
                             'status' => ForumEventRegistrationStatus::Cancelled,
                             'active_scope_key' => null,
-                            'waitlist_position' => null,
                             'cancelled_at' => now(),
                             'cancellation_reason_code' => 'event-cancelled',
                             'lock_version' => $registration->lock_version + 1,
@@ -124,6 +128,28 @@ final readonly class CancelForumEvent
                         ]);
                     }
                 });
+            PlaceAccessGrant::query()
+                ->where('event_id', $locked->id)
+                ->where('purpose', PlaceAccessPurpose::EventAttendance->value)
+                ->where('status', PlaceAccessGrantStatus::Active->value)
+                ->whereNull('revoked_at')
+                ->update([
+                    'status' => PlaceAccessGrantStatus::Revoked->value,
+                    'revoked_by_user_id' => $actor->id,
+                    'revoked_at' => now(),
+                    'revocation_reason_code' => 'event-cancelled',
+                    'updated_at' => now(),
+                ]);
+            ForumEventInvitation::query()
+                ->where('forum_event_id', $locked->id)
+                ->where('status', ForumEventInvitationStatus::Pending->value)
+                ->lockForUpdate()
+                ->update([
+                    'active_pair_key' => null,
+                    'status' => ForumEventInvitationStatus::Revoked->value,
+                    'responded_at' => now(),
+                    'updated_at' => now(),
+                ]);
             $locked->occurrences()
                 ->whereNotIn('status', [
                     ForumEventStatus::Completed->value,
@@ -146,7 +172,7 @@ final readonly class CancelForumEvent
                     'type' => ForumEventUpdateType::Cancelled,
                     'audience' => ForumEventUpdateAudience::Public,
                     'title' => 'forum_events.updates.cancelled_title',
-                    'body' => trim($explanation),
+                    'body' => 'forum_events.updates.cancelled_body',
                     'published_at' => now(),
                 ],
             );
@@ -168,7 +194,7 @@ final readonly class CancelForumEvent
         ForumEventRegistration::query()
             ->where('forum_event_id', $cancelled->id)
             ->where('cancellation_reason_code', 'event-cancelled')
-            ->with('user:id,actor_key,locale')
+            ->with('user:id,actor_key,locale,status')
             ->orderBy('id')
             ->chunkById(100, function ($registrations) use ($cancelled): void {
                 foreach ($registrations as $registration) {

@@ -12,10 +12,13 @@
     @endif
 
     <form
+        method="POST"
+        action="{{ route('login') }}"
         wire:submit="authenticate"
         x-on:auth-validation-failed.window="$nextTick(() => $refs.email.focus())"
         class="auth-form"
     >
+        @csrf
         <x-auth-field
             id="login-email"
             label="{{ __('auth.fields.email') }}"

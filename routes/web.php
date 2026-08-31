@@ -363,10 +363,6 @@ Route::middleware('web')
             Route::get('/meetups/small-dog-social', MeetupDetailPreviewController::class)
                 ->defaults('event', 'small-dog-social')
                 ->name('meetups.small_dog_social');
-            Route::get('/meetups/created/{item}', CreatedContentPreviewController::class)
-                ->defaults('kind', 'meetup')
-                ->where('item', 'created-meetup-[A-Za-z0-9-]+')
-                ->name('meetups.created');
             Route::get('/meetups/{event}/edit', MeetupEditController::class)
                 ->where('event', '[A-Za-z0-9-]+')
                 ->name('meetups.edit');

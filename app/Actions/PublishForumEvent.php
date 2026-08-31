@@ -54,6 +54,8 @@ final readonly class PublishForumEvent
                 'location_scope' => $locked->location_scope,
                 'online_url' => $locked->online_url,
                 'registration_policy' => $locked->registration_policy->value,
+                'registration_opens_at' => $locked->registration_opens_at?->toAtomString(),
+                'registration_closes_at' => $locked->registration_closes_at?->toAtomString(),
                 'visibility' => $locked->visibility->value,
                 'group_id' => $locked->forum_group_id,
                 'responsible_organization_id' => $locked->responsible_organization_id,
@@ -81,6 +83,8 @@ final readonly class PublishForumEvent
                     'required',
                     Rule::enum(ForumEventRegistrationPolicy::class),
                 ],
+                'registration_opens_at' => ['nullable', 'date'],
+                'registration_closes_at' => ['nullable', 'date'],
                 'visibility' => ['required', Rule::enum(ForumEventVisibility::class)],
                 'group_id' => [
                     Rule::requiredIf($locked->visibility === ForumEventVisibility::Group),
@@ -95,6 +99,31 @@ final readonly class PublishForumEvent
                 'animal_welfare_rules' => ['required', 'string', 'min:10', 'max:10000'],
                 'emergency_contact_plan' => ['required', 'string', 'min:10', 'max:10000'],
             ])->validate();
+
+            if ($locked->registration_opens_at !== null
+                && ! $locked->registration_opens_at->isBefore($locked->starts_at)
+            ) {
+                throw ValidationException::withMessages([
+                    'registration_opens_at' => __('forum_events.validation.registration_window_before_start'),
+                ]);
+            }
+
+            if ($locked->registration_closes_at !== null
+                && $locked->registration_closes_at->isAfter($locked->starts_at)
+            ) {
+                throw ValidationException::withMessages([
+                    'registration_closes_at' => __('forum_events.validation.registration_window_before_start'),
+                ]);
+            }
+
+            if ($locked->registration_opens_at !== null
+                && $locked->registration_closes_at !== null
+                && ! $locked->registration_closes_at->isAfter($locked->registration_opens_at)
+            ) {
+                throw ValidationException::withMessages([
+                    'registration_closes_at' => __('forum_events.validation.registration_window_order'),
+                ]);
+            }
 
             if ($locked->visibility === ForumEventVisibility::Invitation
                 && $locked->registration_policy !== ForumEventRegistrationPolicy::Invitation

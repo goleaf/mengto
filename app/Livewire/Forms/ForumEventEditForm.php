@@ -10,6 +10,8 @@ use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
 use App\Models\ForumEvent;
+use App\Rules\ApproximateMeetupLocation;
+use Carbon\CarbonImmutable;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
@@ -24,6 +26,12 @@ final class ForumEventEditForm extends Form
     public string $visibility = 'public';
 
     public string $registrationPolicy = 'open';
+
+    public string $registrationOpensAt = '';
+
+    public string $registrationClosesAt = '';
+
+    public string $timezone = 'UTC';
 
     public string $petParticipationMode = 'optional';
 
@@ -54,10 +62,12 @@ final class ForumEventEditForm extends Form
             'type' => ['required', Rule::enum(ForumEventType::class)],
             'visibility' => ['required', Rule::enum(ForumEventVisibility::class)],
             'registrationPolicy' => ['required', Rule::enum(ForumEventRegistrationPolicy::class)],
+            'registrationOpensAt' => ['nullable', 'date'],
+            'registrationClosesAt' => ['nullable', 'date'],
             'petParticipationMode' => ['required', Rule::enum(ForumEventPetParticipation::class)],
             'capacity' => ['nullable', 'integer', 'min:1', 'max:100000'],
             'waitlistEnabled' => ['boolean'],
-            'locationScope' => ['nullable', 'string', 'max:190'],
+            'locationScope' => ['nullable', 'string', 'max:190', new ApproximateMeetupLocation],
             'exactLocation' => ['nullable', 'string', 'max:2000'],
             'attendanceRequirements' => ['nullable', 'string', 'max:5000'],
             'accessibilityInformation' => ['nullable', 'string', 'max:5000'],
@@ -74,6 +84,9 @@ final class ForumEventEditForm extends Form
         $this->type = $event->type->value;
         $this->visibility = $event->visibility->value;
         $this->registrationPolicy = $event->registration_policy->value;
+        $this->registrationOpensAt = $event->registration_opens_at?->setTimezone($event->timezone)->format('Y-m-d\TH:i') ?? '';
+        $this->registrationClosesAt = $event->registration_closes_at?->setTimezone($event->timezone)->format('Y-m-d\TH:i') ?? '';
+        $this->timezone = $event->timezone;
         $this->petParticipationMode = $event->pet_participation_mode->value;
         $this->capacity = $event->capacity;
         $this->waitlistEnabled = $event->waitlist_enabled;
@@ -106,6 +119,12 @@ final class ForumEventEditForm extends Form
             animalWelfareRules: trim((string) $validated['animalWelfareRules']),
             emergencyContactPlan: trim((string) $validated['emergencyContactPlan']),
             idempotencyKey: (string) $validated['idempotencyKey'],
+            registrationOpensAt: filled($validated['registrationOpensAt'] ?? null)
+                ? CarbonImmutable::parse((string) $validated['registrationOpensAt'], $this->timezone)->utc()
+                : null,
+            registrationClosesAt: filled($validated['registrationClosesAt'] ?? null)
+                ? CarbonImmutable::parse((string) $validated['registrationClosesAt'], $this->timezone)->utc()
+                : null,
         );
     }
 

@@ -58,7 +58,6 @@ final class PreviewService
                 ...$this->directoryGroups(),
             ]),
             meetups: $this->interactions->meetups([
-                ...$this->created->meetups(),
                 ...$this->directoryMeetups(),
             ]),
         );
@@ -221,7 +220,6 @@ final class PreviewService
                 'indoor' => __('messages.indoor'),
             ]),
             'directoryMeetups' => $this->interactions->meetups([
-                ...$this->created->meetups(),
                 ...$this->directoryMeetups(),
             ]),
         ];

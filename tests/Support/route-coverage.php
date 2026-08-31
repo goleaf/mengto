@@ -24,7 +24,6 @@ return [
     'groups.created' => 'tests/Feature/GroupDirectoryPreviewTest.php',
     'groups.show' => 'tests/Feature/GroupDirectoryPreviewTest.php',
     'meetups.small_dog_social' => 'tests/Feature/MeetupDirectoryPreviewTest.php',
-    'meetups.created' => 'tests/Feature/MeetupDirectoryPreviewTest.php',
     'meetups.show' => 'tests/Feature/MeetupDirectoryPreviewTest.php',
     'members.show' => 'tests/Feature/DiscoverExperienceTest.php',
     'forum.topics.edit' => 'tests/Feature/ForumTopicTest.php',

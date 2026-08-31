@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Models\PetProfile;
 use App\Models\User;
-use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Support\Str;
 
@@ -14,7 +13,6 @@ final class CreatedContentPresenter
 {
     public function __construct(
         private readonly PrototypeState $state,
-        private readonly LocaleFormatter $formatter,
         private readonly AuthFactory $auth,
     ) {}
 
@@ -76,78 +74,6 @@ final class CreatedContentPresenter
                 ])),
             ];
         }, $this->state->created('groups'));
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    public function meetups(): array
-    {
-        return array_map(function (array $meetup): array {
-            $key = 'created-meetup-'.$meetup['id'];
-            $dateValue = $meetup['date'] !== ''
-                ? $meetup['date']
-                : now()->toImmutable()->addWeek()->format('Y-m-d');
-            $timeValue = isset($meetup['time']) && $meetup['time'] !== ''
-                ? $meetup['time']
-                : '10:00';
-            $timezone = $meetup['timezone'] ?? config('app.timezone');
-            $startsAt = CarbonImmutable::createFromFormat(
-                'Y-m-d H:i',
-                $dateValue.' '.$timeValue,
-                $timezone,
-            );
-
-            return [
-                'key' => $key,
-                'detail_route' => 'meetups.created',
-                'detail_parameters' => ['item' => $key],
-                'title' => $meetup['title'],
-                'category' => Str::headline($meetup['category'] ?: __('messages.community')),
-                'day' => $this->formatter->weekdayShort($startsAt),
-                'date' => $this->formatter->dayNumber($startsAt),
-                'date_label' => $this->formatter->weekdayMonthDay($startsAt),
-                'date_accessible' => $this->formatter->accessibleDateTime($startsAt),
-                'datetime' => $startsAt->toAtomString(),
-                'time' => $this->formatter->time($startsAt, (string) $timezone),
-                'timezone' => $timezone,
-                'place' => ($meetup['format'] ?? 'offline') === 'online'
-                    ? __('messages.online')
-                    : ($meetup['location'] ?: __('messages.portland')),
-                'neighborhood' => ($meetup['format'] ?? 'offline') === 'online'
-                    ? __('messages.timezone_aware_online_access')
-                    : __('messages.exact_entrance_after_confirmation'),
-                'distance' => __('messages.nearby'),
-                'attendees' => __('messages.1_neighbor_going'),
-                'description' => $meetup['body'],
-                'format' => $meetup['format'] ?? 'offline',
-                'privacy' => $meetup['privacy'] ?? 'public',
-                'capacity' => (int) ($meetup['capacity'] ?? 12),
-                'registration_policy' => $meetup['registration_policy'] ?? 'approval',
-                'ticket_model' => $meetup['ticket_model'] ?? 'free',
-                'ticket_price' => (float) ($meetup['ticket_price'] ?? 0),
-                'online_url' => $meetup['online_url'] ?? '',
-                'rules' => $meetup['rules'] ?? __('messages.follow_the_organizer_instructions_and_respect_each_pet_s_space'),
-                'safety_plan' => $meetup['detail'] ?? __('messages.use_a_public_arrival_point_and_keep_a_clear_exit_route'),
-                'host' => match ($meetup['organizer'] ?? 'mia') {
-                    'scout' => __('messages.scout_managed_by_mia'),
-                    'group' => __('messages.richmond_pet_circle'),
-                    'organization' => __('messages.brand.community_team'),
-                    default => __('messages.mia_carter'),
-                },
-                'host_initials' => 'MC',
-                'image' => 'https://images.unsplash.com/photo-1667230228326-c881966e2a29?auto=format&fit=crop&w=1200&h=800&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1667230228326-c881966e2a29?auto=format&fit=crop&w=576&h=384&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1667230228326-c881966e2a29?auto=format&fit=crop&w=900&h=600&q=82',
-                'thumbnail' => 'https://images.unsplash.com/photo-1667230228326-c881966e2a29?auto=format&fit=crop&w=160&h=160&q=80',
-                'image_alt' => __('messages.friendly_dogs_meeting_in_a_neighborhood_park'),
-                'tags' => array_values(array_filter([
-                    __('messages.new_event'),
-                    ($meetup['format'] ?? 'offline') === 'online' ? 'online' : 'local',
-                    $meetup['privacy'] ?? null,
-                ])),
-            ];
-        }, $this->state->created('meetups'));
     }
 
     /**
@@ -222,7 +148,6 @@ final class CreatedContentPresenter
 
         return match ($kind) {
             'group' => $this->groupDetail($item),
-            'meetup' => $this->meetupDetail($item),
             'pet' => $this->petDetail($item),
             default => null,
         };
@@ -233,7 +158,7 @@ final class CreatedContentPresenter
      */
     public function shareTarget(string $key): ?array
     {
-        foreach (['group', 'meetup', 'pet'] as $kind) {
+        foreach (['group', 'pet'] as $kind) {
             $content = $this->detail($kind, $key);
 
             if ($content === null) {
@@ -268,7 +193,6 @@ final class CreatedContentPresenter
     {
         $items = match ($kind) {
             'group' => $this->groups(),
-            'meetup' => $this->meetups(),
             'pet' => $this->pets(),
             default => [],
         };
@@ -357,111 +281,6 @@ final class CreatedContentPresenter
                 'icon' => 'sparkles',
                 'title' => __('messages.ready_for_its_first_neighbors'),
                 'description' => __('messages.share_the_community_or_add_the_first_useful_post_to_begin_the_conversation'),
-            ],
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $meetup
-     * @return array<string, mixed>
-     */
-    private function meetupDetail(array $meetup): array
-    {
-        return [
-            'kind' => 'meetup',
-            'route' => 'meetups.created',
-            'page_title' => __('presentation.brand_title', ['title' => $meetup['title']]),
-            'active_section' => 'meetups',
-            'back_route' => 'meetups.index',
-            'back_label' => __('messages.back_to_meetups'),
-            'section' => 'created-meetup-detail',
-            'share_type' => __('messages.meetup'),
-            'share_eyebrow' => __('messages.share_a_meetup'),
-            'summary_label' => __('messages.meetup_summary'),
-            'summary_icons' => ['users', 'clock-3', 'paw-print'],
-            'hero' => [
-                ...$this->media($meetup),
-                'key' => $meetup['key'],
-                'eyebrow' => __('messages.new_neighborhood_plan'),
-                'title' => $meetup['title'],
-                'description' => $meetup['description'],
-                'meta' => [
-                    [
-                        'icon' => 'calendar-days',
-                        'label' => __('presentation.date_at_time', [
-                            'date' => $meetup['date_label'],
-                            'time' => $meetup['time'],
-                        ]),
-                        'datetime' => $meetup['datetime'],
-                        'aria_label' => __('presentation.date_at_time', [
-                            'date' => $meetup['date_accessible'],
-                            'time' => $meetup['time'],
-                        ]),
-                    ],
-                    ['icon' => 'map-pin', 'label' => $meetup['place']],
-                    ['icon' => 'user-round', 'label' => __('messages.hosted_by').$meetup['host']],
-                ],
-                'tags' => $meetup['tags'],
-                'stats' => [
-                    ['label' => __('messages.going'), 'value' => '1', 'detail' => __('messages.founding_neighbor')],
-                    ['label' => __('messages.starts'), 'value' => $meetup['time'], 'detail' => $meetup['date_label']],
-                    ['label' => __('messages.pets'), 'value' => __('messages.welcome'), 'detail' => __('messages.at_a_comfortable_pace')],
-                ],
-            ],
-            'primary' => [
-                'label' => __('messages.rsvp'),
-                'icon' => 'calendar-plus',
-                'active_label' => __('messages.going'),
-                'active_icon' => 'calendar-check',
-                'active' => $this->state->isActive('meetups', $meetup['key']),
-                'action' => 'toggle-meetup',
-            ],
-            'about' => [
-                'eyebrow' => __('messages.meetup_plan'),
-                'title' => __('messages.what_to_expect'),
-                'copy' => $meetup['description'],
-            ],
-            'guidance' => [
-                [
-                    'icon' => 'scroll-text',
-                    'title' => __('messages.event_rules'),
-                    'description' => $meetup['rules'],
-                ],
-                [
-                    'icon' => 'shield-check',
-                    'title' => __('messages.safety_plan'),
-                    'description' => $meetup['safety_plan'],
-                ],
-                [
-                    'icon' => 'map-pinned',
-                    'title' => __('messages.protected_meeting_access'),
-                    'description' => $meetup['privacy'] === 'public'
-                        ? __('messages.the_general_place_is_public_share_exact_arrival_details_only_when_they_are_safe_to_disclose')
-                        : __('messages.this_event_has_limited_visibility_confirm_exact_arrival_details_only_with_approved_attendees'),
-                ],
-            ],
-            'facts' => [
-                ['label' => __('messages.date'), 'value' => $meetup['date_accessible']],
-                ['label' => __('messages.time'), 'value' => $meetup['time']],
-                ['label' => __('messages.timezone'), 'value' => $meetup['timezone']],
-                ['label' => __('messages.meeting_place'), 'value' => $meetup['place']],
-                ['label' => __('messages.registration'), 'value' => Str::headline($meetup['registration_policy'])],
-                [
-                    'label' => __('messages.ticket'),
-                    'value' => $meetup['ticket_model'] === 'paid'
-                        ? $this->formatter->currency($meetup['ticket_price'], 'USD')
-                        : __('presentation.free'),
-                ],
-            ],
-            'notice' => [
-                'icon' => 'shield-check',
-                'title' => __('presentation.event_type', ['type' => Str::headline($meetup['privacy'])]),
-                'description' => __('presentation.capacity_and_format', [
-                    'capacity' => trans_choice('presentation.places_count', $meetup['capacity'], [
-                        'count' => $meetup['capacity'],
-                    ]),
-                    'format' => Str::headline($meetup['format']),
-                ]),
             ],
         ];
     }

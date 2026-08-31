@@ -161,7 +161,7 @@ final readonly class RescheduleForumEvent
 
         $rescheduled->registrations()
             ->whereIn('status', ForumEvent::participantAccessStatusValues())
-            ->with('user:id,actor_key,locale')
+            ->with('user:id,actor_key,locale,status')
             ->orderBy('id')
             ->chunkById(100, function ($registrations) use ($rescheduled): void {
                 foreach ($registrations as $registration) {

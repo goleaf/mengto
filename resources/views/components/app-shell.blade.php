@@ -30,7 +30,9 @@
                 {{ $slot }}
             </main>
 
-            <x-primary-navigation :active-section="$activeSection" variant="mobile" />
+            @if ($owner !== null)
+                <x-primary-navigation :active-section="$activeSection" variant="mobile" />
+            @endif
         </div>
         @livewireScripts
     </body>

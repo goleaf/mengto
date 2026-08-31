@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'current' => [
+        'avatar_alt' => 'Изображение профиля :name',
+        'summary' => 'Ваша учетная запись и личный профиль PawCircle.',
+    ],
     'page' => [
         'browser_title' => ':name | PawCircle',
         'eyebrow' => 'Участник сообщества',

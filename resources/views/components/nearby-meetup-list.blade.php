@@ -26,18 +26,13 @@
 
                 <div class="mt-3 flex items-center justify-between gap-3">
                     <x-icon-text icon="users">{{ $meetup['attendees'] }}</x-icon-text>
-                    <x-action-control
-                        label="{{ __('ui.join') }}"
-                        active-label="{{ __('ui.going') }}"
-                        icon="user-plus"
-                        active-icon="check"
-                        variant="quiet"
-                        size="micro"
-                        :active="$meetup['rsvp']"
-                        :pressed="$meetup['rsvp']"
-                        :endpoint="route('actions.perform')"
-                        :payload="['action' => 'toggle-meetup', 'target' => $meetup['key'], 'label' => $meetup['title']]"
-                    />
+                    <a
+                        class="forum-button min-h-11"
+                        href="{{ isset($meetup['detail_route']) ? route($meetup['detail_route'], $meetup['detail_parameters'] ?? []) : route('meetups.index') }}"
+                    >
+                        <x-ui-icon name="arrow-up-right" />
+                        {{ __('ui.view') }}
+                    </a>
                 </div>
             </x-sidebar-list-item>
         @empty

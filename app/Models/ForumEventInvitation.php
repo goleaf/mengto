@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property CarbonImmutable $expires_at
+ * @property string|null $active_pair_key
  * @property int $forum_event_id
  * @property int $id
  * @property string $idempotency_key
  * @property int|null $invited_by_user_id
  * @property int $invited_user_id
  * @property CarbonImmutable|null $responded_at
+ * @property string|null $request_checksum
  * @property string $stable_key
  * @property ForumEventInvitationStatus $status
  * @property-read ForumEvent $event
@@ -36,6 +38,8 @@ final class ForumEventInvitation extends Model
         'invited_user_id',
         'stable_key',
         'idempotency_key',
+        'active_pair_key',
+        'request_checksum',
         'status',
         'expires_at',
         'responded_at',
@@ -43,6 +47,8 @@ final class ForumEventInvitation extends Model
 
     protected $hidden = [
         'idempotency_key',
+        'active_pair_key',
+        'request_checksum',
     ];
 
     protected function casts(): array

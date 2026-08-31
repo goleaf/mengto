@@ -15,6 +15,8 @@ return [
         'notifications' => 'Уведомления',
         'messages' => 'Сообщения',
         'profile_for' => 'Профиль :name',
+        'sign_in' => 'Войти',
+        'create_account' => 'Создать аккаунт',
     ],
     'items' => [
         'feed' => ['label' => 'Лента', 'mobile_label' => 'Лента'],

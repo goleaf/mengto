@@ -63,6 +63,15 @@ final class ForumEventDirectory extends Component
     #[Url(except: 'discover')]
     public string $scope = 'discover';
 
+    #[Url(except: 'all')]
+    public string $species = 'all';
+
+    #[Url(except: '')]
+    public string $city = '';
+
+    #[Url(except: 'all')]
+    public string $availability = 'all';
+
     public string $feedback = '';
 
     public bool $createOnly = false;
@@ -103,6 +112,33 @@ final class ForumEventDirectory extends Component
 
     public function updatedScope(): void
     {
+        $this->resetPage();
+    }
+
+    public function updatedSpecies(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedCity(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedAvailability(): void
+    {
+        $this->resetPage();
+    }
+
+    public function clearFilters(): void
+    {
+        $this->search = '';
+        $this->type = 'all';
+        $this->format = 'all';
+        $this->period = 'upcoming';
+        $this->species = 'all';
+        $this->city = '';
+        $this->availability = 'all';
         $this->resetPage();
     }
 
@@ -153,6 +189,8 @@ final class ForumEventDirectory extends Component
                 'timezone',
                 'capacity',
                 'registration_policy',
+                'registration_opens_at',
+                'registration_closes_at',
                 'waitlist_enabled',
                 'location_scope',
                 'pet_participation_mode',
@@ -172,18 +210,20 @@ final class ForumEventDirectory extends Component
                     $registrations
                         ->select(['id', 'forum_event_id', 'user_id', 'status', 'waitlist_position'])
                         ->where('user_id', $user instanceof User ? $user->id : 0)
-                        ->latest('id');
+                        ->latest('id')
+                        ->limit(1);
                 },
             ])
             ->withCount([
                 'registrations as confirmed_registrations_count' => static fn (Builder $registrations) => $registrations
-                    ->whereIn('status', [
-                        ForumEventRegistrationStatus::Confirmed->value,
-                        ForumEventRegistrationStatus::CheckedIn->value,
-                    ]),
+                    ->whereIn('status', self::capacityStatusValues()),
                 'registrations as waitlisted_registrations_count' => static fn (Builder $registrations) => $registrations
                     ->where('status', ForumEventRegistrationStatus::Waitlisted->value),
             ])
+            ->withSum([
+                'registrations as confirmed_registration_guests_count' => static fn (Builder $registrations) => $registrations
+                    ->whereIn('status', self::capacityStatusValues()),
+            ], 'guest_count')
             ->withAvg([
                 'reviews as published_review_average' => static fn (Builder $reviews) => $reviews
                     ->where('status', ForumEventReviewStatus::Published->value),
@@ -234,6 +274,36 @@ final class ForumEventDirectory extends Component
             $query->where('format', $filters['format']);
         }
 
+        if ($filters['species'] !== 'all') {
+            $query->whereHas('taxa', static fn (Builder $taxa) => $taxa
+                ->whereKey((int) $filters['species']));
+        }
+
+        if ($filters['city'] !== '') {
+            $query->where('location_scope', 'like', '%'.$filters['city'].'%');
+        }
+
+        if ($filters['availability'] !== 'all') {
+            $query
+                ->whereIn('status', collect(ForumEventStatus::cases())
+                    ->filter(static fn (ForumEventStatus $status): bool => $status->acceptsRegistration())
+                    ->map(static fn (ForumEventStatus $status): string => $status->value)
+                    ->all())
+                ->where('starts_at', '>', now())
+                ->where(function (Builder $window): void {
+                    $window->whereNull('registration_opens_at')
+                        ->orWhere('registration_opens_at', '<=', now());
+                })
+                ->where(function (Builder $window): void {
+                    $window->whereNull('registration_closes_at')
+                        ->orWhere('registration_closes_at', '>', now());
+                });
+
+            if ($filters['availability'] === 'waitlist_available') {
+                $query->where('waitlist_enabled', true);
+            }
+        }
+
         match ($filters['period']) {
             'past' => $query->where('ends_at', '<', now())->orderByDesc('starts_at'),
             'all' => $query->orderBy('starts_at'),
@@ -279,6 +349,25 @@ final class ForumEventDirectory extends Component
         return collect(ForumEventFormat::cases())
             ->mapWithKeys(static fn (ForumEventFormat $format): array => [
                 $format->value => $format->label(),
+            ])
+            ->all();
+    }
+
+    /** @return array<int, string> */
+    #[Computed]
+    public function speciesOptions(): array
+    {
+        return Taxon::query()
+            ->select(['id'])
+            ->active()
+            ->whereHas('activeVersion', static fn (Builder $versions) => $versions
+                ->where('rank', 'species'))
+            ->with('activeVersion:id,taxon_id,scientific_name')
+            ->orderBy('id')
+            ->limit(100)
+            ->get()
+            ->mapWithKeys(static fn (Taxon $taxon): array => [
+                $taxon->id => $taxon->activeVersion?->scientific_name ?? __('taxonomy.unidentified'),
             ])
             ->all();
     }
@@ -450,11 +539,15 @@ final class ForumEventDirectory extends Component
 
     public function create(CreateForumEvent $createEvent): void
     {
-        $event = $createEvent->handle($this->requireUser(), $this->form->data());
-        $this->feedback = __('forum_events.feedback.created');
+        $event = $createEvent->handle(
+            $this->requireUser(),
+            $this->form->data(),
+            ForumEventStatus::Draft,
+        );
+        $this->feedback = __('forum_events.feedback.ready_for_review');
         $this->form->reset();
         $this->initializeForm();
-        $this->redirectRoute('meetups.show', $event, navigate: true);
+        $this->redirectRoute('meetups.edit', $event, navigate: true);
     }
 
     public function saveDraft(CreateForumEvent $createEvent): void
@@ -475,7 +568,7 @@ final class ForumEventDirectory extends Component
         return view('livewire.forum.forum-event-directory');
     }
 
-    /** @return array{search: string, type: string, format: string, period: string, scope: string} */
+    /** @return array{search: string, type: string, format: string, period: string, scope: string, species: string, city: string, availability: string} */
     private function validatedFilters(): array
     {
         $validator = validator([
@@ -484,6 +577,9 @@ final class ForumEventDirectory extends Component
             'format' => $this->format,
             'period' => $this->period,
             'scope' => $this->scope,
+            'species' => $this->species,
+            'city' => trim($this->city),
+            'availability' => $this->availability,
         ], [
             'search' => ['nullable', 'string', 'max:120'],
             'type' => [
@@ -508,6 +604,12 @@ final class ForumEventDirectory extends Component
             ],
             'period' => ['required', Rule::in(['upcoming', 'past', 'all'])],
             'scope' => ['required', Rule::in(['discover', 'my', 'invitations'])],
+            'species' => [
+                'required',
+                Rule::when($this->species !== 'all', ['integer', Rule::exists('taxa', 'id')->where('is_active', true)]),
+            ],
+            'city' => ['nullable', 'string', 'max:120'],
+            'availability' => ['required', Rule::in(['all', 'registration_open', 'waitlist_available'])],
         ]);
 
         if ($validator->fails()) {
@@ -516,6 +618,9 @@ final class ForumEventDirectory extends Component
             $this->format = 'all';
             $this->period = 'upcoming';
             $this->scope = 'discover';
+            $this->species = 'all';
+            $this->city = '';
+            $this->availability = 'all';
 
             return [
                 'search' => '',
@@ -523,10 +628,13 @@ final class ForumEventDirectory extends Component
                 'format' => 'all',
                 'period' => 'upcoming',
                 'scope' => 'discover',
+                'species' => 'all',
+                'city' => '',
+                'availability' => 'all',
             ];
         }
 
-        /** @var array{search: string|null, type: string, format: string, period: string, scope: string} $validated */
+        /** @var array{search: string|null, type: string, format: string, period: string, scope: string, species: string, city: string|null, availability: string} $validated */
         $validated = $validator->validated();
 
         return [
@@ -535,6 +643,9 @@ final class ForumEventDirectory extends Component
             'format' => $validated['format'],
             'period' => $validated['period'],
             'scope' => $validated['scope'],
+            'species' => $validated['species'],
+            'city' => (string) ($validated['city'] ?? ''),
+            'availability' => $validated['availability'],
         ];
     }
 
@@ -543,10 +654,11 @@ final class ForumEventDirectory extends Component
         $user = Auth::user();
         $timezone = $user instanceof User ? $user->timezone : 'UTC';
         $locale = $user instanceof User ? $user->locale : app()->getLocale();
-        $startsAt = now($timezone)->addDays(7)->startOfHour();
+        $startsAt = now($timezone)->toImmutable()->addDays(7)->startOfHour();
 
         $this->form->startsAt = $startsAt->format('Y-m-d\TH:i');
         $this->form->endsAt = $startsAt->addHours(2)->format('Y-m-d\TH:i');
+        $this->form->registrationClosesAt = $startsAt->format('Y-m-d\TH:i');
         $this->form->timezone = $timezone;
         $this->form->locale = $locale;
         $this->form->animalWelfareRules = __('forum_events.defaults.group_welfare_rules');
@@ -569,6 +681,7 @@ final class ForumEventDirectory extends Component
     private function presentEvent(ForumEvent $event, array $verifiedIds): array
     {
         $confirmed = (int) $event->getAttribute('confirmed_registrations_count')
+            + (int) $event->getAttribute('confirmed_registration_guests_count')
             + (int) data_get($event->metadata, 'legacy_base_attendees', 0);
         $user = Auth::user();
         $registration = $event->registrations->first();
@@ -598,6 +711,11 @@ final class ForumEventDirectory extends Component
             'confirmed_count' => $confirmed,
             'waitlist_count' => (int) $event->getAttribute('waitlisted_registrations_count')
                 + (int) data_get($event->metadata, 'legacy_waitlist_count', 0),
+            'registration_policy' => $event->registration_policy->label(),
+            'registration_open' => $event->registrationWindowIsOpen()
+                && $event->status->acceptsRegistration()
+                && $event->starts_at->isFuture(),
+            'waitlist_enabled' => $event->waitlist_enabled,
             'review_average' => $event->getAttribute('published_review_average') === null
                 ? null
                 : round((float) $event->getAttribute('published_review_average'), 1),
@@ -623,5 +741,15 @@ final class ForumEventDirectory extends Component
                 ? __('forum_events.actions.manage')
                 : __('forum_events.actions.open'),
         ];
+    }
+
+    /** @return list<string> */
+    private static function capacityStatusValues(): array
+    {
+        return collect(ForumEventRegistrationStatus::cases())
+            ->filter(static fn (ForumEventRegistrationStatus $status): bool => $status->consumesSeat())
+            ->map(static fn (ForumEventRegistrationStatus $status): string => $status->value)
+            ->values()
+            ->all();
     }
 }

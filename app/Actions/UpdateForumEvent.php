@@ -13,6 +13,7 @@ use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
 use App\Models\ForumEvent;
 use App\Models\User;
+use App\Rules\ApproximateMeetupLocation;
 use App\Services\ForumEventAudit;
 use App\Services\ForumEventNotifier;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -34,8 +35,9 @@ final readonly class UpdateForumEvent
         $this->gate->forUser($actor)->authorize('update', $event);
 
         [$updated, $materialChanges] = DB::transaction(function () use ($actor, $data, $event): array {
+            $lockedActor = User::query()->lockForUpdate()->findOrFail($actor->id);
             $locked = ForumEvent::query()->lockForUpdate()->findOrFail($event->id);
-            $this->gate->forUser($actor)->authorize('update', $locked);
+            $this->gate->forUser($lockedActor)->authorize('update', $locked);
             $this->validate($locked, $data);
 
             if (in_array($locked->status, [
@@ -96,6 +98,8 @@ final readonly class UpdateForumEvent
                 'type' => $data->type,
                 'visibility' => $data->visibility,
                 'registration_policy' => $data->registrationPolicy,
+                'registration_opens_at' => $data->registrationOpensAt,
+                'registration_closes_at' => $data->registrationClosesAt,
                 'pet_participation_mode' => $data->petParticipationMode,
                 'capacity' => $data->capacity,
                 'waitlist_enabled' => $data->waitlistEnabled,
@@ -109,6 +113,8 @@ final readonly class UpdateForumEvent
             $materialFields = [
                 'visibility',
                 'registration_policy',
+                'registration_opens_at',
+                'registration_closes_at',
                 'capacity',
                 'location_scope',
                 'exact_location',
@@ -140,7 +146,7 @@ final readonly class UpdateForumEvent
 
             $this->audit->record(
                 event: $locked,
-                actor: $actor,
+                actor: $lockedActor,
                 eventType: 'updated',
                 reasonCode: $materialChanges === [] ? 'event-minor-update' : 'event-material-update',
                 summaryTranslationKey: 'forum_events.history.updated',
@@ -154,7 +160,7 @@ final readonly class UpdateForumEvent
         if ($materialChanges !== []) {
             $updated->registrations()
                 ->whereIn('status', ForumEvent::participantAccessStatusValues())
-                ->with('user:id,actor_key,locale')
+                ->with('user:id,actor_key,locale,status')
                 ->orderBy('id')
                 ->chunkById(100, function ($registrations) use ($updated): void {
                     foreach ($registrations as $registration) {
@@ -181,6 +187,8 @@ final readonly class UpdateForumEvent
             'type' => $data->type->value,
             'visibility' => $data->visibility->value,
             'registration_policy' => $data->registrationPolicy->value,
+            'registration_opens_at' => $data->registrationOpensAt?->toAtomString(),
+            'registration_closes_at' => $data->registrationClosesAt?->toAtomString(),
             'pet_participation_mode' => $data->petParticipationMode->value,
             'capacity' => $data->capacity,
             'location_scope' => $data->locationScope,
@@ -199,6 +207,8 @@ final readonly class UpdateForumEvent
                 'required',
                 Rule::enum(ForumEventRegistrationPolicy::class),
             ],
+            'registration_opens_at' => ['nullable', 'date'],
+            'registration_closes_at' => ['nullable', 'date'],
             'pet_participation_mode' => [
                 'required',
                 Rule::enum(ForumEventPetParticipation::class),
@@ -209,6 +219,7 @@ final readonly class UpdateForumEvent
                 'nullable',
                 'string',
                 'max:190',
+                new ApproximateMeetupLocation,
             ],
             'exact_location' => [
                 Rule::prohibitedIf($event->place_id !== null),
@@ -222,5 +233,30 @@ final readonly class UpdateForumEvent
             'emergency_contact_plan' => ['required', 'string', 'min:10', 'max:10000'],
             'idempotency_key' => ['required', 'string', 'min:16', 'max:190'],
         ])->validate();
+
+        if ($data->registrationOpensAt !== null
+            && ! $data->registrationOpensAt->isBefore($event->starts_at)
+        ) {
+            throw ValidationException::withMessages([
+                'editForm.registrationOpensAt' => __('forum_events.validation.registration_window_before_start'),
+            ]);
+        }
+
+        if ($data->registrationClosesAt !== null
+            && $data->registrationClosesAt->isAfter($event->starts_at)
+        ) {
+            throw ValidationException::withMessages([
+                'editForm.registrationClosesAt' => __('forum_events.validation.registration_window_before_start'),
+            ]);
+        }
+
+        if ($data->registrationOpensAt !== null
+            && $data->registrationClosesAt !== null
+            && ! $data->registrationClosesAt->isAfter($data->registrationOpensAt)
+        ) {
+            throw ValidationException::withMessages([
+                'editForm.registrationClosesAt' => __('forum_events.validation.registration_window_order'),
+            ]);
+        }
     }
 }

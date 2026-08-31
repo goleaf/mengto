@@ -98,6 +98,10 @@ test('the meetup card renders an explicit empty tags state', function () {
         'image_medium' => 'https://example.test/meetup-medium.jpg',
         'image_alt' => 'Test meetup in a park',
         'tags' => [],
+        'media_target' => [
+            'url' => route('meetups.index'),
+            'label' => 'Open event',
+        ],
     ];
 
     $card = Blade::render(
@@ -105,5 +109,8 @@ test('the meetup card renders an explicit empty tags state', function () {
         ['meetup' => $meetup],
     );
 
-    expect($card)->toContain('All friendly pets welcome.');
+    expect($card)->toContain('All friendly pets welcome.')
+        ->toContain('href="'.route('meetups.index').'"')
+        ->not->toContain('toggle-meetup')
+        ->not->toContain(route('actions.perform'));
 });

@@ -40,18 +40,19 @@
         </x-icon-text>
         <p class="mt-1 text-xs text-paw-muted">{{ $meetup['neighborhood'] }}</p>
 
-        <x-initials-action-row
-            :initials="$meetup['host_initials']"
-            :title="__('ui.hosted_by').' '.$meetup['host']"
-            :detail="$meetup['attendees']"
-            detail-icon="users"
-            action-label="{{ __('ui.rsvp') }}"
-            action-icon="calendar-plus"
-            :action-endpoint="route('actions.perform')"
-            :action-payload="['action' => 'toggle-meetup', 'target' => $meetupKey, 'label' => $meetup['title']]"
-            :active="$rsvp"
-            active-label="{{ __('ui.going') }}"
-            active-icon="calendar-check"
-        />
+        <div class="mt-auto flex items-center gap-3 pt-5">
+            <x-initials-avatar :initials="$meetup['host_initials']" />
+            <div class="min-w-0">
+                <p class="text-xs font-semibold text-paw-ink">{{ __('ui.hosted_by') }} {{ $meetup['host'] }}</p>
+                <x-icon-text icon="users" class="mt-0.5">{{ $meetup['attendees'] }}</x-icon-text>
+            </div>
+            <a
+                class="forum-button ml-auto min-h-11 shrink-0"
+                href="{{ $meetup['media_target']['url'] ?? route('meetups.index') }}"
+            >
+                <x-ui-icon name="arrow-up-right" />
+                {{ __('ui.view') }}
+            </a>
+        </div>
     </x-slot:footer>
 </x-directory-card>

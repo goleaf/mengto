@@ -132,6 +132,19 @@
                     </div>
                 </fieldset>
 
+                <div class="grid gap-4 md:grid-cols-2">
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.registration_opens_at') }}</span>
+                        <input type="datetime-local" wire:model="editForm.registrationOpensAt">
+                        @error('editForm.registrationOpensAt') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.registration_closes_at') }}</span>
+                        <input type="datetime-local" wire:model="editForm.registrationClosesAt">
+                        @error('editForm.registrationClosesAt') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                </div>
+
                 <fieldset class="forum-form__field">
                     <legend>{{ __('forum_events.fields.registration_policy') }}</legend>
                     <div class="grid gap-2 sm:grid-cols-2">
@@ -289,6 +302,18 @@
                         <dt class="font-semibold">{{ __('forum_events.fields.registration_policy') }}</dt>
                         <dd>{{ $this->event['registration_policy'] }}</dd>
                     </div>
+                    @if ($this->event['registration_opens_at'])
+                        <div>
+                            <dt class="font-semibold">{{ __('forum_events.fields.registration_opens_at') }}</dt>
+                            <dd>{{ $this->event['registration_opens_at'] }}</dd>
+                        </div>
+                    @endif
+                    @if ($this->event['registration_closes_at'])
+                        <div>
+                            <dt class="font-semibold">{{ __('forum_events.fields.registration_closes_at') }}</dt>
+                            <dd>{{ $this->event['registration_closes_at'] }}</dd>
+                        </div>
+                    @endif
                     <div>
                         <dt class="font-semibold">{{ __('forum_events.fields.cost_minor') }}</dt>
                         <dd>{{ $this->event['cost'] }}</dd>
@@ -590,7 +615,11 @@
                     @if ($this->currentRegistration['pets'] !== [])
                         <ul class="grid gap-1 text-sm" aria-label="{{ __('forum_events.fields.pet_profiles') }}">
                             @forelse ($this->currentRegistration['pets'] as $pet)
-                                <li>{{ $pet['name'] }} · {{ $pet['species'] }} · {{ $pet['eligibility'] }}</li>
+                                <li>
+                                    {{ $pet['name'] }}
+                                    @if ($pet['species']) · {{ $pet['species'] }} @endif
+                                    · {{ $pet['eligibility'] }}
+                                </li>
                             @empty
                             @endforelse
                         </ul>
@@ -614,7 +643,7 @@
                 </section>
             @elseif ($this->event['can_register'])
                 <form wire:submit="register" class="forum-form grid gap-3">
-                    <h2 class="text-lg">{{ __('forum_events.actions.register') }}</h2>
+                    <h2 class="text-lg">{{ $this->event['registration_action_label'] }}</h2>
                     @if ($this->event['cost'] !== __('forum_events.labels.cost_free'))
                         <p class="border-s-4 border-status-warning ps-4">{{ __('forum_events.notices.payment_unavailable') }}</p>
                     @endif
@@ -686,7 +715,7 @@
                     </label>
                     <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="register">
                         <x-ui-icon name="calendar-check" />
-                        <span wire:loading.remove wire:target="register">{{ __('forum_events.actions.register') }}</span>
+                        <span wire:loading.remove wire:target="register">{{ $this->event['registration_action_label'] }}</span>
                         <span wire:loading wire:target="register">{{ __('forum_events.actions.registering') }}</span>
                     </button>
                 </form>
@@ -1030,7 +1059,11 @@
                                 @if ($registration['pets'] !== [])
                                     <ul class="grid gap-1 text-sm" aria-label="{{ __('forum_events.fields.pet_profiles') }}">
                                         @forelse ($registration['pets'] as $pet)
-                                            <li>{{ $pet['name'] }} · {{ $pet['species'] }} · {{ $pet['eligibility'] }}</li>
+                                            <li>
+                                                {{ $pet['name'] }}
+                                                @if ($pet['species']) · {{ $pet['species'] }} @endif
+                                                · {{ $pet['eligibility'] }}
+                                            </li>
                                         @empty
                                         @endforelse
                                     </ul>
@@ -1048,10 +1081,30 @@
                                             {{ __('forum_events.actions.decline') }}
                                         </button>
                                     @elseif ($registration['status_key'] === 'confirmed')
-                                        <button type="button" class="forum-button min-h-11" wire:click="checkIn({{ $registration['id'] }})">
-                                            <x-ui-icon name="badge-check" />
-                                            {{ __('forum_events.actions.check_in') }}
-                                        </button>
+                                        @if ($registration['check_in_available'])
+                                            <button
+                                                type="button"
+                                                class="forum-button min-h-11"
+                                                wire:click="checkIn({{ $registration['id'] }})"
+                                                wire:loading.attr="disabled"
+                                                wire:target="checkIn({{ $registration['id'] }})"
+                                            >
+                                                <x-ui-icon name="badge-check" />
+                                                {{ __('forum_events.actions.check_in') }}
+                                            </button>
+                                        @elseif ($registration['no_show_available'])
+                                            <button
+                                                type="button"
+                                                class="forum-button min-h-11"
+                                                wire:click="markNoShow({{ $registration['id'] }})"
+                                                wire:confirm="{{ __('forum_events.actions.no_show_confirm') }}"
+                                                wire:loading.attr="disabled"
+                                                wire:target="markNoShow({{ $registration['id'] }})"
+                                            >
+                                                <x-ui-icon name="user-x" />
+                                                {{ __('forum_events.actions.no_show') }}
+                                            </button>
+                                        @endif
                                     @elseif ($registration['status_key'] === 'checked_in')
                                         <button type="button" class="forum-button min-h-11" wire:click="checkOut({{ $registration['id'] }})">
                                             <x-ui-icon name="log-out" />

@@ -5,7 +5,13 @@
         description="{{ __('auth.password.reset_description') }}"
     />
 
-    <form wire:submit="resetPassword" class="auth-form">
+    <form
+        method="POST"
+        action="{{ route('password.reset', ['token' => $token]) }}"
+        wire:submit="resetPassword"
+        class="auth-form"
+    >
+        @csrf
         <x-auth-field
             id="reset-email"
             label="{{ __('auth.fields.email') }}"

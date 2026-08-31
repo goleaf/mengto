@@ -101,6 +101,11 @@ final class ForumEventRegistrationFactory extends ApplicationFactory
         return $this->withStatus(ForumEventRegistrationStatus::Confirmed);
     }
 
+    public function declined(): static
+    {
+        return $this->withStatus(ForumEventRegistrationStatus::Declined);
+    }
+
     public function waitlisted(int $position = 1): static
     {
         return $this->state(fn (): array => [

@@ -41,7 +41,6 @@ return [
         'knowledge.articles.show',
         'lost-found.show',
         'marketplace.show',
-        'meetups.created',
         'meetups.show',
         'meetups.small_dog_social',
         'members.show',

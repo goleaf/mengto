@@ -46,6 +46,7 @@ final readonly class RevokeForumEventInvitation
             }
 
             $locked->forceFill([
+                'active_pair_key' => null,
                 'status' => ForumEventInvitationStatus::Revoked,
                 'responded_at' => now(),
             ])->save();

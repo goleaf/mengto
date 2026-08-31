@@ -9,14 +9,20 @@ use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventTeamRole;
 use App\Enums\ForumEventVisibility;
+use App\Enums\ForumGroupStatus;
 use App\Enums\OrganizationRestrictionCapability;
 use App\Models\ForumEvent;
 use App\Models\User;
+use App\Services\ForumModerationGuard;
 use App\Services\SocialBlockService;
 
 final class ForumEventPolicy
 {
-    public function __construct(private readonly SocialBlockService $blocks) {}
+    public function __construct(
+        private readonly SocialBlockService $blocks,
+        private readonly ForumModerationGuard $moderation,
+        private readonly ForumGroupPolicy $groups,
+    ) {}
 
     public function viewAny(?User $user): bool
     {
@@ -27,6 +33,10 @@ final class ForumEventPolicy
     {
         if ($user?->isAdministrator() === true) {
             return true;
+        }
+
+        if ($this->moderation->hides($event)) {
+            return false;
         }
 
         if ($user !== null && $this->canManage($user, $event)) {
@@ -66,6 +76,8 @@ final class ForumEventPolicy
                 && $event->responsibleOrganization?->membershipFor($user) !== null,
             ForumEventVisibility::Group => $user?->isActive() === true
                 && $event->group()
+                    ->where('status', ForumGroupStatus::Active->value)
+                    ->whereNull('archived_at')
                     ->where(function ($groups) use ($user): void {
                         $groups
                             ->where('owner_user_id', $user->id)
@@ -78,6 +90,7 @@ final class ForumEventPolicy
                     ->exists(),
             ForumEventVisibility::Private,
             ForumEventVisibility::Invitation => $user?->isActive() === true
+                && $this->hasOrganizationMembership($user, $event)
                 && ($event->invitations()
                     ->where('invited_user_id', $user->id)
                     ->whereIn('status', [
@@ -95,19 +108,36 @@ final class ForumEventPolicy
 
     public function create(?User $user): bool
     {
-        return $user?->isActive() === true && $user->hasVerifiedEmail();
+        return $this->canMutate($user);
     }
 
     public function update(?User $user, ForumEvent $event): bool
     {
-        return $user?->isActive() === true
+        return $this->canMutate($user)
+            && ($event->status !== ForumEventStatus::SafetySuspended || $user->isAdministrator())
             && ($user->isAdministrator() || $this->canManage($user, $event))
             && $event->status !== ForumEventStatus::Archived;
+    }
+
+    public function cancel(?User $user, ForumEvent $event): bool
+    {
+        return $this->canMutate($user)
+            && ($user->isAdministrator() || $this->canManage($user, $event))
+            && ! in_array($event->status, [
+                ForumEventStatus::Draft,
+                ForumEventStatus::Incomplete,
+                ForumEventStatus::Completed,
+                ForumEventStatus::Archived,
+            ], true);
     }
 
     public function publish(?User $user, ForumEvent $event): bool
     {
         return $this->update($user, $event)
+            && $this->organizationAllows(
+                $event,
+                OrganizationRestrictionCapability::PublishEvents,
+            )
             && in_array($event->status, [
                 ForumEventStatus::Draft,
                 ForumEventStatus::Incomplete,
@@ -118,6 +148,8 @@ final class ForumEventPolicy
     public function viewAccessDetails(?User $user, ForumEvent $event): bool
     {
         return $user?->isActive() === true
+            && $user->hasVerifiedEmail()
+            && ! $this->moderation->userIsSuspended($user)
             && $this->view($user, $event)
             && ($event->canDiscloseAccessTo($user)
                 || $this->hasTeamRole($user, $event, [
@@ -135,11 +167,12 @@ final class ForumEventPolicy
 
     public function register(?User $user, ForumEvent $event): bool
     {
-        return $user?->isActive() === true
-            && $user->hasVerifiedEmail()
+        return $this->canMutate($user)
             && $this->view($user, $event)
             && ! $event->isOrganizer($user)
-            && ($event->organizer === null || $event->organizer->isActive())
+            && ($event->organizer === null
+                || ($event->organizer->isActive()
+                    && ! $this->moderation->userIsSuspended($event->organizer)))
             && $this->organizationAllows(
                 $event,
                 OrganizationRestrictionCapability::AcceptRegistrations,
@@ -150,7 +183,7 @@ final class ForumEventPolicy
 
     public function manageRegistrations(?User $user, ForumEvent $event): bool
     {
-        if ($user?->isActive() !== true) {
+        if (! $this->canMutate($user)) {
             return false;
         }
 
@@ -178,9 +211,8 @@ final class ForumEventPolicy
 
     public function manageTeam(?User $user, ForumEvent $event): bool
     {
-        return $user?->isActive() === true
+        return $this->canMutate($user)
             && ($user->isAdministrator()
-                || $event->isOwner($user)
                 || $this->hasTeamRole($user, $event, [
                     ForumEventTeamRole::Owner,
                     ForumEventTeamRole::Administrator,
@@ -189,7 +221,7 @@ final class ForumEventPolicy
 
     public function manageSchedule(?User $user, ForumEvent $event): bool
     {
-        return $user?->isActive() === true
+        return $this->canMutate($user)
             && $event->status !== ForumEventStatus::Archived
             && ($user->isAdministrator() || $this->hasTeamRole($user, $event, [
                 ForumEventTeamRole::Owner,
@@ -202,9 +234,8 @@ final class ForumEventPolicy
 
     public function overrideScheduleConflict(?User $user, ForumEvent $event): bool
     {
-        return $user?->isActive() === true
+        return $this->canMutate($user)
             && ($user->isAdministrator()
-                || $event->isOwner($user)
                 || $this->hasTeamRole($user, $event, [
                     ForumEventTeamRole::Owner,
                     ForumEventTeamRole::Administrator,
@@ -217,7 +248,8 @@ final class ForumEventPolicy
         ForumEvent $event,
         ForumEventStatus $next,
     ): bool {
-        if ($this->update($user, $event)
+        if ($event->status !== ForumEventStatus::SafetySuspended
+            && $this->update($user, $event)
             && ($next !== ForumEventStatus::Published || $this->organizationAllows(
                 $event,
                 OrganizationRestrictionCapability::PublishEvents,
@@ -227,7 +259,7 @@ final class ForumEventPolicy
         }
 
         return $next === ForumEventStatus::SafetySuspended
-            && $user?->isActive() === true
+            && $this->canMutate($user)
             && $this->hasTeamRole($user, $event, [
                 ForumEventTeamRole::SafetyLead,
                 ForumEventTeamRole::WelfareOfficer,
@@ -255,7 +287,7 @@ final class ForumEventPolicy
 
     public function respondToInvitation(?User $user, ForumEvent $event): bool
     {
-        return $user?->isActive() === true
+        return $this->canMutate($user)
             && $this->view($user, $event)
             && $event->invitations()
                 ->where('invited_user_id', $user->id)
@@ -271,7 +303,7 @@ final class ForumEventPolicy
 
     public function sendMessage(?User $user, ForumEvent $event): bool
     {
-        if ($user?->isActive() !== true) {
+        if (! $this->canMutate($user)) {
             return false;
         }
 
@@ -297,7 +329,7 @@ final class ForumEventPolicy
 
     public function review(?User $user, ForumEvent $event): bool
     {
-        if ($user?->isActive() !== true
+        if (! $this->canMutate($user)
             || ! $this->view($user, $event)
             || ! $event->hasEnded()
         ) {
@@ -339,7 +371,9 @@ final class ForumEventPolicy
     /** @param list<ForumEventTeamRole> $roles */
     private function hasTeamRole(User $user, ForumEvent $event, array $roles): bool
     {
-        if (! $this->hasOrganizationMembership($user, $event)) {
+        if (! $this->hasOrganizationMembership($user, $event)
+            || ! $this->hasGroupAuthority($user, $event)
+        ) {
             return false;
         }
 
@@ -370,7 +404,9 @@ final class ForumEventPolicy
     /** @param list<ForumEventTeamRole> $roles */
     private function hasAssignedTeamRole(User $user, ForumEvent $event, array $roles): bool
     {
-        if (! $this->hasOrganizationMembership($user, $event)) {
+        if (! $this->hasOrganizationMembership($user, $event)
+            || ! $this->hasGroupAuthority($user, $event)
+        ) {
             return false;
         }
 
@@ -396,6 +432,24 @@ final class ForumEventPolicy
     {
         return $event->responsibleOrganization === null
             || $event->responsibleOrganization->membershipFor($user) !== null;
+    }
+
+    private function hasGroupAuthority(User $user, ForumEvent $event): bool
+    {
+        if ($event->forum_group_id === null) {
+            return true;
+        }
+
+        $group = $event->group()->first();
+
+        return $group !== null && $this->groups->createContent($user, $group);
+    }
+
+    private function canMutate(?User $user): bool
+    {
+        return $user?->isActive() === true
+            && $user->hasVerifiedEmail()
+            && ! $this->moderation->userIsSuspended($user);
     }
 
     private function blockedFromOrganizer(User $user, ForumEvent $event): bool

@@ -55,7 +55,7 @@ final readonly class PetProfileCreationInput
     {
         $input = [
             'name' => $data['title'] ?? '',
-            'species' => $data['species'] ?? $data['category'] ?? '',
+            'species' => Str::lower(trim((string) ($data['species'] ?? $data['category'] ?? ''))),
             'species_confidence' => $data['species_confidence'] ?? null,
             'relationship_role' => $data['relationship_role'] ?? PetManagerRole::PrimaryOwner->value,
             'visibility' => $data['visibility'] ?? PetProfileVisibility::Private->value,

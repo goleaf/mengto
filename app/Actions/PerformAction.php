@@ -67,7 +67,6 @@ class PerformAction
         return match ($action) {
             'toggle-follow' => $this->toggle('follows', $target, __('messages.action.followed', ['label' => $label]), __('messages.action.unfollowed', ['label' => $label])),
             'toggle-group' => $this->toggle('groups', $target, __('messages.action.group_joined', ['label' => $label]), __('messages.action.group_left', ['label' => $label])),
-            'toggle-meetup' => $this->toggle('meetups', $target, __('messages.action.meetup_confirmed', ['label' => $label]), __('messages.action.meetup_cancelled', ['label' => $label])),
             'toggle-paw' => $this->toggle('paws', $target, __('messages.action.paw_sent', ['label' => $label]), __('messages.action.paw_removed', ['label' => $label])),
             'toggle-save' => $this->toggle('saved', $target, __('messages.action.saved', ['label' => $label]), __('messages.action.unsaved', ['label' => $label])),
             'toggle-setting' => $this->toggleSetting($target, $label),
